@@ -38,6 +38,7 @@ dependencies:
   hive_ce: ^2.15.1
   hive_ce_flutter: ^2.3.3
   flutter_bloc: ^9.1.1
+  auto_route: ^10.2.2
 
 dev_dependencies:
   flutter_test:

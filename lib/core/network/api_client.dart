@@ -1,5 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:sangam/core/constants/api_constants.dart';
+import 'package:sangam/core/network/interceptors/auth_interceptors.dart';
+import 'package:sangam/core/network/interceptors/logging_interceptors.dart';
+import 'package:sangam/core/network/interceptors/retry_interceptors.dart';
 import 'package:sangam/core/network/network_exceptions.dart';
 
 class ApiClient {
@@ -21,7 +24,11 @@ class ApiClient {
         },
       ),
     );
-    dio.interceptors.addAll([]);
+    dio.interceptors.addAll([
+      LoggingInterceptor(),
+      AuthInterceptor(),
+      RetryOnConnectionChangeInterceptor(dio: dio),
+    ]);
   }
 
   ///GET request using [Dio.get] method

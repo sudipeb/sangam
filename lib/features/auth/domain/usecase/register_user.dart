@@ -1,4 +1,4 @@
-import 'package:sangam/features/auth/domain/entitiy/user.dart';
+import 'package:sangam/features/auth/domain/entity/user.dart';
 import 'package:sangam/features/auth/domain/repository/auth_repository.dart';
 
 ///Encapsulates the registration logic by delegating the actual

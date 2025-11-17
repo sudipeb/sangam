@@ -1,4 +1,4 @@
-import 'package:sangam/features/auth/domain/entitiy/user.dart';
+import 'package:sangam/features/auth/domain/entity/user.dart';
 
 ///responsible for handling user login and registration
 /// actions and returning a [User] entity upon success

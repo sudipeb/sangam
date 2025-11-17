@@ -1,4 +1,4 @@
-import 'package:sangam/features/auth/domain/entitiy/user.dart';
+import 'package:sangam/features/auth/domain/entity/user.dart';
 
 ///provides the different possible states
 abstract class AuthState {}

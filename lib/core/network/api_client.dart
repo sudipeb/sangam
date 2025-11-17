@@ -3,9 +3,12 @@ import 'package:sangam/core/constants/api_constants.dart';
 import 'package:sangam/core/network/network_exceptions.dart';
 
 class ApiClient {
+  ///singleton of [ApiClient], ensures only one [ApiClient] exists in the app
   static final ApiClient _instance = ApiClient._internal();
   late final Dio dio;
   factory ApiClient() => _instance;
+
+  ///Private constructor _internal initializes the [Dio] object
   ApiClient._internal() {
     dio = Dio(
       BaseOptions(
@@ -21,6 +24,7 @@ class ApiClient {
     dio.interceptors.addAll([]);
   }
 
+  ///GET request using [Dio.get] method
   Future<Response> get(
     String path, {
     Map<String, dynamic>? queryParameters,
@@ -32,14 +36,16 @@ class ApiClient {
     }
   }
 
+  /// POST request using [Dio.post] method
   Future<Response> post(String path, {dynamic data}) async {
     try {
-      return await dio.get(path, data: data);
+      return await dio.post(path, data: data);
     } on DioException catch (e) {
       throw NetworkExceptions.fromDioError(e);
     }
   }
 
+  /// PUT request using [Dio.put] method
   Future<Response> put(String path, {dynamic data}) async {
     try {
       return await dio.put(path, data: data);
@@ -48,6 +54,7 @@ class ApiClient {
     }
   }
 
+  ///DELETE request using [Dio.delete] method
   Future<Response> delete(String path, {dynamic data}) async {
     try {
       return await dio.delete(path, data: data);

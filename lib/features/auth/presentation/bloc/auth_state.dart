@@ -9,10 +9,10 @@ class AuthLoading extends AuthState {}
 
 class AuthSuccess extends AuthState {
   final User user;
-  AuthSuccess(this.user);
+  AuthSuccess({required this.user});
 }
 
 class AuthFailure extends AuthState {
   final String message;
-  AuthFailure(this.message);
+  AuthFailure({required this.message});
 }

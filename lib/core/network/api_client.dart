@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sangam/core/constants/api_constants.dart';
 import 'package:sangam/core/network/interceptors/auth_interceptors.dart';
 import 'package:sangam/core/network/interceptors/logging_interceptors.dart';
@@ -9,6 +10,7 @@ class ApiClient {
   ///singleton of [ApiClient], ensures only one [ApiClient] exists in the app
   static final ApiClient _instance = ApiClient._internal();
   late final Dio dio;
+  final storage = FlutterSecureStorage();
   factory ApiClient() => _instance;
 
   ///Private constructor _internal initializes the [Dio] object
@@ -26,7 +28,7 @@ class ApiClient {
     );
     dio.interceptors.addAll([
       LoggingInterceptor(),
-      AuthInterceptor(),
+      AuthInterceptor(dio: dio),
       RetryOnConnectionChangeInterceptor(dio: dio),
     ]);
   }

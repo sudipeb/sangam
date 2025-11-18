@@ -6,6 +6,8 @@ import 'package:dio/dio.dart';
 class NetworkExceptions implements Exception {
   final String message;
   NetworkExceptions(this.message);
+  @override
+  String toString() => message;
   factory NetworkExceptions.fromDioError(dynamic error) {
     switch (error.type) {
       case DioExceptionType.connectionTimeout:

@@ -9,7 +9,7 @@ abstract class UserModel with _$UserModel implements User {
     required String id,
     required String name,
     required String email,
-    required String pasword,
+    String? password,
   }) = _UserModel;
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:sangam/core/theme/theme.dart';
 import 'package:sangam/features/auth/data/datasource/auth_remote_data_source.dart';
 import 'package:sangam/features/auth/data/repository/auth_repo_impl.dart';
 import 'package:sangam/features/auth/domain/usecase/login_user.dart';
@@ -36,9 +38,18 @@ class MyApp extends StatelessWidget {
   final _appRouter = AppRouter();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: _appRouter.config(),
-      debugShowCheckedModeBanner: false,
+    return ScreenUtilInit(
+      designSize: const Size(440, 956),
+      minTextAdapt: true,
+      builder: (context, child) {
+        return MaterialApp.router(
+          routerConfig: _appRouter.config(),
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: ThemeMode.system,
+        );
+      },
     );
   }
 }

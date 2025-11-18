@@ -8,7 +8,11 @@ class AuthRemoteDataSource {
       "api/v1/auth/login",
       data: {"email": email, "password": password},
     );
-    return UserModel.fromJson(response.data['users']);
+    if (response.data['user'] == null) {
+      throw Exception("User field missing in response");
+    }
+
+    return UserModel.fromJson(response.data['user']);
   }
 
   Future<UserModel> register(String name, String email, String password) async {
@@ -16,6 +20,10 @@ class AuthRemoteDataSource {
       "api/v1/auth/register",
       data: {"name": name, "email": email, "password": password},
     );
-    return UserModel.fromJson(response.data['users']);
+    if (response.data['user'] == null) {
+      throw Exception("User field missing in response");
+    }
+
+    return UserModel.fromJson(response.data['user']);
   }
 }

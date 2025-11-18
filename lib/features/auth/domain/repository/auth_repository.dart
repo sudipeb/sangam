@@ -1,7 +1,7 @@
 import 'package:sangam/features/auth/domain/entity/user.dart';
 
-///responsible for handling user login and registration
-/// actions and returning a [User] entity upon success
+///responsible for handling user login and registration actions
+///returnns a [User] entity upon success
 abstract class AuthRepository {
   Future<User> login(String email, String password);
 

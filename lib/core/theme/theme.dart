@@ -5,7 +5,7 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     primaryColor: Colors.blue,
-    scaffoldBackgroundColor: Colors.white,
+    scaffoldBackgroundColor: Color(0xFFFFFFFF),
     fontFamily: 'Inter',
     textTheme: _textTheme(Brightness.light),
     appBarTheme: AppBarTheme(

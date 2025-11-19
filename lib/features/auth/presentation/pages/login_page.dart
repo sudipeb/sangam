@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sangam/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sangam/features/auth/presentation/bloc/auth_event.dart';
 import 'package:sangam/features/auth/presentation/bloc/auth_state.dart';
+import 'package:sangam/router/app_router.gr.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 @RoutePage()
 class LoginPage extends StatelessWidget {
@@ -19,23 +21,33 @@ class LoginPage extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         child: Center(
           child: BlocListener<AuthBloc, AuthState>(
-            listener: (context, state) {
+            listener: (context, state) async {
               if (state is AuthLoading) {
                 ScaffoldMessenger.of(
                   context,
                 ).showSnackBar(const SnackBar(content: Text("Logging in...")));
               } else if (state is AuthSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Welcome ${state.user.name}!")),
-                );
-                // Navigate to home
-                // AutoRouter.of(context).replace(const HomeRoute());
+                // Capture navigator and messenger synchronously
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+                final router = AutoRouter.of(context);
+
+                // Do async work
+                SharedPreferences.getInstance().then((prefs) {
+                  prefs.setBool("is_logged_in", true);
+
+                  // Safe: using previously captured context-dependent objects
+                  scaffoldMessenger.showSnackBar(
+                    SnackBar(content: Text("Welcome ${state.user.name}!")),
+                  );
+                  router.replace(HomeLandingRoute());
+                });
               } else if (state is AuthFailure) {
                 ScaffoldMessenger.of(
                   context,
                 ).showSnackBar(SnackBar(content: Text(state.message)));
               }
             },
+
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

@@ -15,3 +15,7 @@ class RegisterRequested extends AuthEvent {
   final String password;
   RegisterRequested(this.name, this.email, this.password);
 }
+
+class TogglePasswordVisibility extends AuthEvent {}
+
+class ToggleAgreement extends AuthEvent {}

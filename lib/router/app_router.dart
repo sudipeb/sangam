@@ -5,7 +5,8 @@ import 'package:sangam/router/app_router.gr.dart';
 class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: RegisterRoute.page, initial: true),
+    AutoRoute(page: RegisterRoute.page),
     AutoRoute(page: LoginRoute.page),
+    AutoRoute(page: SplashRoute.page, initial: true),
   ];
 }

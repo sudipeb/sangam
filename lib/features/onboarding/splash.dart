@@ -18,9 +18,9 @@ class SplashPage extends StatelessWidget {
       child: BlocListener<SplashCubit, SplashState>(
         listener: (context, state) {
           if (state is SplashNavigateToHome) {
-            context.router.replace(LoginRoute());
+            context.router.replace(HomeLandingRoute());
           } else if (state is SplashNavigateToRegistration) {
-            context.router.replace(RegisterRoute());
+            context.router.replace(LoginRoute());
           }
         },
         child: Scaffold(

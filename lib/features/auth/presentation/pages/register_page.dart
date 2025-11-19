@@ -37,6 +37,7 @@ class RegisterPage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
+          final isAgreed = state is AuthInitial ? state.isAgreed : false;
           return Padding(
             padding: const EdgeInsets.all(20),
             child: Center(
@@ -115,8 +116,13 @@ class RegisterPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.radio_button_off),
+                          onPressed: () =>
+                              context.read<AuthBloc>().add(ToggleAgreement()),
+                          icon: Icon(
+                            isAgreed
+                                ? Icons.check_circle
+                                : Icons.radio_button_off,
+                          ),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
                         ),

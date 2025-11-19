@@ -43,5 +43,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       }
     });
+    on<TogglePasswordVisibility>(_onTogglePasswordVisibility);
+    on<ToggleAgreement>(_onToggleAgreement);
+  }
+  void _onTogglePasswordVisibility(
+    TogglePasswordVisibility event,
+    Emitter<AuthState> emit,
+  ) {
+    final currentState = state as AuthInitial;
+    emit(
+      AuthInitial(
+        obscurePassword: !currentState.obscurePassword,
+        isAgreed: currentState.isAgreed,
+      ),
+    );
+  }
+
+  void _onToggleAgreement(ToggleAgreement event, Emitter<AuthState> emit) {
+    final currentState = state as AuthInitial;
+    emit(
+      AuthInitial(
+        obscurePassword: currentState.obscurePassword,
+        isAgreed: !currentState.isAgreed,
+      ),
+    );
   }
 }

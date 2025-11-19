@@ -9,17 +9,35 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i4;
-import 'package:flutter/material.dart' as _i5;
-import 'package:sangam/features/auth/presentation/pages/login_page.dart' as _i1;
+import 'package:auto_route/auto_route.dart' as _i5;
+import 'package:flutter/material.dart' as _i6;
+import 'package:sangam/features/auth/presentation/pages/login_page.dart' as _i2;
 import 'package:sangam/features/auth/presentation/pages/register_page.dart'
-    as _i2;
-import 'package:sangam/features/onboarding/splash.dart' as _i3;
+    as _i3;
+import 'package:sangam/features/home/presentation/pages/home_landing_page.dart'
+    as _i1;
+import 'package:sangam/features/onboarding/splash.dart' as _i4;
 
 /// generated route for
-/// [_i1.LoginPage]
-class LoginRoute extends _i4.PageRouteInfo<LoginRouteArgs> {
-  LoginRoute({_i5.Key? key, List<_i4.PageRouteInfo>? children})
+/// [_i1.HomeLandingPage]
+class HomeLandingRoute extends _i5.PageRouteInfo<void> {
+  const HomeLandingRoute({List<_i5.PageRouteInfo>? children})
+    : super(HomeLandingRoute.name, initialChildren: children);
+
+  static const String name = 'HomeLandingRoute';
+
+  static _i5.PageInfo page = _i5.PageInfo(
+    name,
+    builder: (data) {
+      return const _i1.HomeLandingPage();
+    },
+  );
+}
+
+/// generated route for
+/// [_i2.LoginPage]
+class LoginRoute extends _i5.PageRouteInfo<LoginRouteArgs> {
+  LoginRoute({_i6.Key? key, List<_i5.PageRouteInfo>? children})
     : super(
         LoginRoute.name,
         args: LoginRouteArgs(key: key),
@@ -28,13 +46,13 @@ class LoginRoute extends _i4.PageRouteInfo<LoginRouteArgs> {
 
   static const String name = 'LoginRoute';
 
-  static _i4.PageInfo page = _i4.PageInfo(
+  static _i5.PageInfo page = _i5.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<LoginRouteArgs>(
         orElse: () => const LoginRouteArgs(),
       );
-      return _i1.LoginPage(key: args.key);
+      return _i2.LoginPage(key: args.key);
     },
   );
 }
@@ -42,7 +60,7 @@ class LoginRoute extends _i4.PageRouteInfo<LoginRouteArgs> {
 class LoginRouteArgs {
   const LoginRouteArgs({this.key});
 
-  final _i5.Key? key;
+  final _i6.Key? key;
 
   @override
   String toString() {
@@ -61,9 +79,9 @@ class LoginRouteArgs {
 }
 
 /// generated route for
-/// [_i2.RegisterPage]
-class RegisterRoute extends _i4.PageRouteInfo<RegisterRouteArgs> {
-  RegisterRoute({_i5.Key? key, List<_i4.PageRouteInfo>? children})
+/// [_i3.RegisterPage]
+class RegisterRoute extends _i5.PageRouteInfo<RegisterRouteArgs> {
+  RegisterRoute({_i6.Key? key, List<_i5.PageRouteInfo>? children})
     : super(
         RegisterRoute.name,
         args: RegisterRouteArgs(key: key),
@@ -72,13 +90,13 @@ class RegisterRoute extends _i4.PageRouteInfo<RegisterRouteArgs> {
 
   static const String name = 'RegisterRoute';
 
-  static _i4.PageInfo page = _i4.PageInfo(
+  static _i5.PageInfo page = _i5.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<RegisterRouteArgs>(
         orElse: () => const RegisterRouteArgs(),
       );
-      return _i2.RegisterPage(key: args.key);
+      return _i3.RegisterPage(key: args.key);
     },
   );
 }
@@ -86,7 +104,7 @@ class RegisterRoute extends _i4.PageRouteInfo<RegisterRouteArgs> {
 class RegisterRouteArgs {
   const RegisterRouteArgs({this.key});
 
-  final _i5.Key? key;
+  final _i6.Key? key;
 
   @override
   String toString() {
@@ -105,17 +123,17 @@ class RegisterRouteArgs {
 }
 
 /// generated route for
-/// [_i3.SplashPage]
-class SplashRoute extends _i4.PageRouteInfo<void> {
-  const SplashRoute({List<_i4.PageRouteInfo>? children})
+/// [_i4.SplashPage]
+class SplashRoute extends _i5.PageRouteInfo<void> {
+  const SplashRoute({List<_i5.PageRouteInfo>? children})
     : super(SplashRoute.name, initialChildren: children);
 
   static const String name = 'SplashRoute';
 
-  static _i4.PageInfo page = _i4.PageInfo(
+  static _i5.PageInfo page = _i5.PageInfo(
     name,
     builder: (data) {
-      return const _i3.SplashPage();
+      return const _i4.SplashPage();
     },
   );
 }

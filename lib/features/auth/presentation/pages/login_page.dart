@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,9 +6,9 @@ import 'package:sangam/core/constants/app_constants.dart';
 import 'package:sangam/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sangam/features/auth/presentation/bloc/auth_event.dart';
 import 'package:sangam/features/auth/presentation/bloc/auth_state.dart';
+import 'package:sangam/features/auth/presentation/widgets/auth_neuwromorphic_wrapper.dart';
 import 'package:sangam/router/app_router.gr.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
 class LoginPage extends StatelessWidget {
@@ -67,15 +66,18 @@ class LoginPage extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            "Email Address",
+                            "Email",
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
                         ],
                       ),
-                      TextFormField(
-                        controller: _emailController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                      softField(
+                        child: TextFormField(
+                          controller: _emailController,
+                          decoration: const InputDecoration(
+                            hintText: "Enter your Email Address",
+                            border: OutlineInputBorder(),
+                          ),
                         ),
                       ),
                     ],
@@ -91,19 +93,35 @@ class LoginPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      TextFormField(
-                        controller: _passwordController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                      softField(
+                        child: TextFormField(
+                          controller: _passwordController,
+
+                          decoration: const InputDecoration(
+                            hintText: "Enter Password",
+                            border: OutlineInputBorder(),
+                          ),
+                          obscureText: true,
                         ),
-                        obscureText: true,
                       ),
                     ],
                   ),
                   SizedBox(height: 10.h),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      SizedBox(
+                        child: Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(Icons.radio_button_off),
+                            ),
+                            Text("Remembe Me?"),
+                          ],
+                        ),
+                      ),
+                      Spacer(),
                       TextButton(
                         onPressed: () {},
                         child: Text(
@@ -117,62 +135,7 @@ class LoginPage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  SizedBox(
-                    height: 37.h,
-                    width: 400.w,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.radio_button_off),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: RichText(
-                            text: TextSpan(
-                              style: const TextStyle(
-                                color: Colors.black87,
-                                fontSize: 14,
-                              ),
-                              children: [
-                                const TextSpan(text: "I've read "),
-                                TextSpan(
-                                  text: "User Agreement",
-                                  style: const TextStyle(color: Colors.blue),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () async {
-                                      final Uri url = Uri.parse(
-                                        "https://example.com/user-agreement",
-                                      );
-                                      if (!await launchUrl(url)) {
-                                        throw 'Could not launch $url';
-                                      }
-                                    },
-                                ),
-                                const TextSpan(text: " and agreed "),
-                                TextSpan(
-                                  text: "Privacy Policy",
-                                  style: const TextStyle(color: Colors.blue),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () async {
-                                      final Uri url = Uri.parse(
-                                        "https://example.com/privacy-policy",
-                                      );
-                                      if (!await launchUrl(url)) {
-                                        throw 'Could not launch $url';
-                                      }
-                                    },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+
                   SizedBox(height: 10.h),
                   SizedBox(
                     height: 50.h,
@@ -180,7 +143,7 @@ class LoginPage extends StatelessWidget {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
-                        backgroundColor: Colors.blue, // Text / icon color
+                        backgroundColor: Colors.blueGrey, // Text / icon color
                         shadowColor: Colors.grey, // Shadow color
                         elevation: 5, // Shadow elevation
                         padding: const EdgeInsets.symmetric(

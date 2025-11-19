@@ -42,13 +42,13 @@ class AppTheme {
         color: isDark ? Colors.white70 : Colors.black87,
       ),
       bodyLarge: TextStyle(
-        fontSize: 16.sp,
-        fontWeight: FontWeight.normal,
+        fontSize: 18.sp,
+        fontWeight: FontWeight.bold,
         color: isDark ? Colors.white70 : Colors.black87,
       ),
       bodyMedium: TextStyle(
         fontSize: 14.sp,
-        fontWeight: FontWeight.normal,
+        fontWeight: FontWeight.w600,
         color: isDark ? Colors.white60 : Colors.black54,
       ),
     );

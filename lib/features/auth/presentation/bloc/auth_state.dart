@@ -3,7 +3,11 @@ import 'package:sangam/features/auth/domain/entity/user.dart';
 ///provides the different possible states
 abstract class AuthState {}
 
-class AuthInitial extends AuthState {}
+class AuthInitial extends AuthState {
+  final bool obscurePassword;
+  final bool isAgreed;
+  AuthInitial({this.obscurePassword = true, this.isAgreed = false});
+}
 
 class AuthLoading extends AuthState {}
 

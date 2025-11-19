@@ -18,7 +18,7 @@ class RegisterPage extends StatelessWidget {
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
-            context.router.push(const LoginRoute());
+            context.router.push(LoginRoute());
           } else if (state is AuthFailure) {
             ScaffoldMessenger.of(
               context,

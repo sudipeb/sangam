@@ -20,117 +20,110 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Center(
-          child: BlocListener<AuthBloc, AuthState>(
-            listener: (context, state) async {
-              if (state is AuthLoading) {
-                CircularProgressIndicator();
-              } else if (state is AuthSuccess) {
-                // Capture navigator and messenger synchronously
-                final scaffoldMessenger = ScaffoldMessenger.of(context);
-                final router = AutoRouter.of(context);
+      body: Center(
+        child: BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) async {
+            if (state is AuthSuccess) {
+              final scaffoldMessenger = ScaffoldMessenger.of(context);
+              final router = AutoRouter.of(context);
 
-                // Do async work
-                SharedPreferences.getInstance().then((prefs) {
-                  prefs.setBool("is_logged_in", true);
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.setBool("is_logged_in", true);
 
-                  // Safe: using previously captured context-dependent objects
-                  scaffoldMessenger.showSnackBar(
-                    SnackBar(content: Text("Welcome ${state.user.name}!")),
-                  );
-                  router.replace(HomeLandingRoute());
-                });
-              } else if (state is AuthFailure) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(state.message)));
-              }
-            },
+              scaffoldMessenger.showSnackBar(
+                SnackBar(content: Text("Welcome ${state.user.name}!")),
+              );
 
-            child: Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Image.asset(ImageConstant.loginImage),
-                    Text(
-                      "Log in to your account",
-                      style: Theme.of(context).textTheme.headlineLarge
-                          ?.copyWith(color: Colors.blueAccent),
-                    ),
-                    SizedBox(height: 50.h),
-                    Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Email",
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                          ],
-                        ),
-                        softField(
-                          child: TextFormField(
-                            controller: _emailController,
-                            decoration: const InputDecoration(
-                              hintText: "Enter your Email Address",
-                              border: OutlineInputBorder(),
+              router.replace(HomeLandingRoute());
+            } else if (state is AuthFailure) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
+            }
+          },
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 50.h),
+                      Image.asset(ImageConstant.loginImage),
+                      const SizedBox(height: 20),
+                      Text(
+                        "Log in to your account",
+                        style: Theme.of(context).textTheme.headlineLarge
+                            ?.copyWith(color: Colors.blueAccent),
+                      ),
+                      SizedBox(height: 50.h),
+                      // Email Field
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Email",
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          const SizedBox(height: 8),
+                          softField(
+                            child: TextFormField(
+                              controller: _emailController,
+                              decoration: const InputDecoration(
+                                hintText: "Enter your Email Address",
+                                border: OutlineInputBorder(),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Password",
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                          ],
-                        ),
-                        BlocBuilder<AuthBloc, AuthState>(
-                          builder: (context, state) {
-                            final isObscure = state is AuthInitial
-                                ? state.obscurePassword
-                                : true;
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      // Password Field
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Password",
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          const SizedBox(height: 8),
+                          BlocBuilder<AuthBloc, AuthState>(
+                            builder: (context, state) {
+                              final isObscure = state is AuthInitial
+                                  ? state.obscurePassword
+                                  : true;
 
-                            return softField(
-                              child: TextFormField(
-                                controller: _passwordController,
-                                decoration: InputDecoration(
-                                  hintText: "Enter Password",
-                                  border: OutlineInputBorder(),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      isObscure
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
+                              return softField(
+                                child: TextFormField(
+                                  controller: _passwordController,
+                                  obscureText: isObscure,
+                                  decoration: InputDecoration(
+                                    hintText: "Enter Password",
+                                    border: const OutlineInputBorder(),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        isObscure
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                      ),
+                                      onPressed: () => context
+                                          .read<AuthBloc>()
+                                          .add(TogglePasswordVisibility()),
                                     ),
-                                    onPressed: () {
-                                      context.read<AuthBloc>().add(
-                                        TogglePasswordVisibility(),
-                                      );
-                                    },
                                   ),
                                 ),
-                                obscureText: isObscure,
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          child: Row(
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      // Remember Me + Forgot Password
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
                             children: [
                               BlocBuilder<AuthBloc, AuthState>(
                                 builder: (context, state) {
@@ -152,66 +145,82 @@ class LoginPage extends StatelessWidget {
                               const Text("Remember Me?"),
                             ],
                           ),
-                        ),
-                        Spacer(),
-                        TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            "Forgot Password?",
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  color: const Color.fromARGB(255, 233, 64, 3),
-                                ),
+                          TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              "Forgot Password?",
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    color: const Color.fromARGB(
+                                      255,
+                                      233,
+                                      64,
+                                      3,
+                                    ),
+                                  ),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-
-                    SizedBox(height: 10.h),
-                    SizedBox(
-                      height: 50.h,
-                      width: 200.w,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.blueGrey, // Text / icon color
-                          shadowColor: Colors.grey, // Shadow color
-                          elevation: 5, // Shadow elevation
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 12,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onPressed: () {
-                          final email = _emailController.text.trim();
-                          final password = _passwordController.text.trim();
-                          if (email.isEmpty || password.isEmpty) return;
-                          // Dispatch login via Bloc
-                          context.read<AuthBloc>().add(
-                            LoginRequested(email, password),
-                          );
-                        },
-                        child: const Text("Login"),
+                        ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Don't have an account?"),
-                        TextButton(
-                          onPressed: () => context.router.push(RegisterRoute()),
-                          child: Text("Create Account"),
+                      const SizedBox(height: 20),
+                      // Login Button
+                      SizedBox(
+                        height: 50.h,
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.blueGrey,
+                            shadowColor: Colors.grey,
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onPressed: () {
+                            final email = _emailController.text.trim();
+                            final password = _passwordController.text.trim();
+                            if (email.isEmpty || password.isEmpty) return;
+
+                            context.read<AuthBloc>().add(
+                              LoginRequested(email, password),
+                            );
+                          },
+                          child: const Text("Login"),
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      const SizedBox(height: 20),
+                      // Register Row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Don't have an account?"),
+                          TextButton(
+                            onPressed: () =>
+                                context.router.push(RegisterRoute()),
+                            child: const Text("Create Account"),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
+              // Loading Overlay
+              BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  if (state is AuthLoading) {
+                    return SizedBox.expand(
+                      child: Container(
+                        color: Colors.black38,
+                        child: const Center(child: CircularProgressIndicator()),
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+            ],
           ),
         ),
       ),

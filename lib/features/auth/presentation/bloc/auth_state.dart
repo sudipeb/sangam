@@ -33,3 +33,16 @@ class ForgotPasswordFailure extends AuthState {
   final String error;
   ForgotPasswordFailure(this.error);
 }
+
+//reset password
+class ResetPasswordLoading extends AuthState {}
+
+class ResetPasswordSuccess extends AuthState {
+  final String message;
+  ResetPasswordSuccess(this.message);
+}
+
+class ResetPasswordFailure extends AuthState {
+  final String error;
+  ResetPasswordFailure(this.error);
+}

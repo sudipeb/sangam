@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sangam/core/network/network_exceptions.dart';
+import 'package:sangam/features/auth/domain/usecase/forgot_password.dart';
 import 'package:sangam/features/auth/domain/usecase/login_user.dart';
 import 'package:sangam/features/auth/domain/usecase/register_user.dart';
 import 'package:sangam/features/auth/presentation/bloc/auth_event.dart';
@@ -9,8 +10,12 @@ import 'package:sangam/features/auth/presentation/bloc/auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUser loginUser;
   final RegisterUser registerUser;
-  AuthBloc({required this.loginUser, required this.registerUser})
-    : super(AuthInitial()) {
+  final ForgotPasswordUser forgotPassword;
+  AuthBloc({
+    required this.loginUser,
+    required this.registerUser,
+    required this.forgotPassword,
+  }) : super(AuthInitial()) {
     // Handler for LoginRequested event
     on<LoginRequested>((event, emit) async {
       emit(AuthLoading());
@@ -45,6 +50,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
     on<TogglePasswordVisibility>(_onTogglePasswordVisibility);
     on<ToggleAgreement>(_onToggleAgreement);
+    on<ForgotPassword>(_onForgotPassword);
   }
   void _onTogglePasswordVisibility(
     TogglePasswordVisibility event,
@@ -67,5 +73,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         isAgreed: !currentState.isAgreed,
       ),
     );
+  }
+
+  Future<void> _onForgotPassword(
+    ForgotPassword event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(ForgotPasswordLoading());
+    try {
+      // Call the use case here
+      final user = await forgotPassword.execute(event.email);
+      emit(AuthSuccess(user: user));
+    } catch (e) {
+      emit(ForgotPasswordFailure(e.toString()));
+    }
   }
 }

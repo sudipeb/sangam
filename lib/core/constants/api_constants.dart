@@ -8,4 +8,5 @@ class ApiEndpoints {
   static const String login = "api/v1/auth/login";
   static const String profile = "api/v1/auth/profile";
   static const String refreshToken = "api/v1/auth/refresh-token";
+  static const String forgotPassword = "api/v1/auth/forgot-password";
 }

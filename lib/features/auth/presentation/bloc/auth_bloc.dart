@@ -3,6 +3,7 @@ import 'package:sangam/core/network/network_exceptions.dart';
 import 'package:sangam/features/auth/domain/usecase/forgot_password.dart';
 import 'package:sangam/features/auth/domain/usecase/login_user.dart';
 import 'package:sangam/features/auth/domain/usecase/register_user.dart';
+import 'package:sangam/features/auth/domain/usecase/reset_password.dart';
 import 'package:sangam/features/auth/presentation/bloc/auth_event.dart';
 import 'package:sangam/features/auth/presentation/bloc/auth_state.dart';
 
@@ -11,10 +12,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUser loginUser;
   final RegisterUser registerUser;
   final ForgotPasswordUser forgotPassword;
+  final ResetUserPassword resetpassword;
   AuthBloc({
     required this.loginUser,
     required this.registerUser,
     required this.forgotPassword,
+    required this.resetpassword,
   }) : super(AuthInitial()) {
     // Handler for LoginRequested event
     on<LoginRequested>((event, emit) async {
@@ -51,14 +54,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<TogglePasswordVisibility>(_onTogglePasswordVisibility);
     on<ToggleAgreement>(_onToggleAgreement);
     on<ForgotPassword>(_onForgotPassword);
+    on<ResetPasswordRequested>(_onResetPassword);
   }
   void _onTogglePasswordVisibility(
     TogglePasswordVisibility event,
     Emitter<AuthState> emit,
   ) {
-    final currentState = state as AuthInitial;
+    final currentState = state as AuthFormState;
     emit(
-      AuthInitial(
+      AuthFormState(
         obscurePassword: !currentState.obscurePassword,
         isAgreed: currentState.isAgreed,
       ),
@@ -66,9 +70,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   void _onToggleAgreement(ToggleAgreement event, Emitter<AuthState> emit) {
-    final currentState = state as AuthInitial;
+    final currentState = state as AuthFormState;
     emit(
-      AuthInitial(
+      AuthFormState(
         obscurePassword: currentState.obscurePassword,
         isAgreed: !currentState.isAgreed,
       ),
@@ -81,11 +85,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(ForgotPasswordLoading());
     try {
-      // Call the use case here
-      final user = await forgotPassword.execute(event.email);
-      emit(AuthSuccess(user: user));
+      // Call the use case here and await the result
+      final resetToken = await forgotPassword.execute(event.email);
+      emit(
+        ForgotPasswordSuccess(resetToken),
+      ); // or ForgotPasswordSuccess(user: user) if you have a separate state
     } catch (e) {
       emit(ForgotPasswordFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onResetPassword(
+    ResetPasswordRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(ResetPasswordLoading());
+    try {
+      // Await the reset password execution
+      final result = await resetpassword.execute(event.token, event.password);
+
+      // Emit success with a message or the returned User
+      emit(ResetPasswordSuccess("Password successfully reset!"));
+    } catch (e) {
+      emit(ResetPasswordFailure(e.toString()));
     }
   }
 }

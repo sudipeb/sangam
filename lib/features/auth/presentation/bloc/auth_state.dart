@@ -3,11 +3,7 @@ import 'package:sangam/features/auth/domain/entity/user.dart';
 ///provides the different possible states
 abstract class AuthState {}
 
-class AuthInitial extends AuthState {
-  final bool obscurePassword;
-  final bool isAgreed;
-  AuthInitial({this.obscurePassword = true, this.isAgreed = false});
-}
+class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
@@ -21,12 +17,19 @@ class AuthFailure extends AuthState {
   AuthFailure({required this.message});
 }
 
+class AuthFormState extends AuthState {
+  final bool obscurePassword;
+  final bool isAgreed;
+
+  AuthFormState({this.obscurePassword = true, this.isAgreed = false});
+}
+
 ///Forgot Password states
 class ForgotPasswordLoading extends AuthState {}
 
 class ForgotPasswordSuccess extends AuthState {
-  final String message;
-  ForgotPasswordSuccess({this.message = "Password reset email sent!"});
+  final String resetPasswordToken;
+  ForgotPasswordSuccess(this.resetPasswordToken);
 }
 
 class ForgotPasswordFailure extends AuthState {

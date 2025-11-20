@@ -37,7 +37,7 @@ class RegisterPage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final isAgreed = state is AuthInitial ? state.isAgreed : false;
+          final isAgreed = state is AuthFormState ? state.isAgreed : false;
           return Padding(
             padding: const EdgeInsets.all(20),
             child: Center(

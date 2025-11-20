@@ -1,12 +1,13 @@
+
 import 'package:sangam/features/auth/domain/repository/auth_repository.dart';
 
 ///Encapsulates the Login logic by delegating the actual
 ///operation to the [AuthRepository].
-class ForgotPasswordUser {
+class ResetUserPassword {
   final AuthRepository repository;
-  ForgotPasswordUser(this.repository);
+  ResetUserPassword(this.repository);
 
-  Future<String> execute(String email) {
-    return repository.forgotpassword(email);
+  Future<bool> execute(String token, String newPassword) {
+    return repository.resetpassword(token, newPassword);
   }
 }

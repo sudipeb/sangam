@@ -58,15 +58,42 @@ class AuthRemoteDataSource {
     return UserModel.fromJson(response.data['user']);
   }
 
-  Future<User> forgotpassword(String email) async {
+  Future<String> forgotpassword(String email) async {
     final response = await apiClient.post(
       ApiEndpoints.forgotPassword,
       data: {"email": email},
     );
-    if (response.data['user'] == null) {
-      throw Exception("Cant change the password");
+
+    final resetLink = response.data['resetPasswordLink'];
+    if (resetLink == null) {
+      throw Exception("Failed to get reset link");
     }
 
-    return UserModel.fromJson(response.data['user']);
+    // Extract token from the URL
+    final uri = Uri.parse(resetLink);
+    final token = uri.queryParameters['token'];
+    if (token == null) {
+      throw Exception("Reset token missing in response");
+    }
+
+    debugPrint("Reset token: $token");
+    return token;
+  }
+
+  Future<bool> resetpassword({
+    required String token,
+    required String newPassword,
+  }) async {
+    final response = await apiClient.post(
+      "${ApiEndpoints.resetPassword}?token=$token",
+      data: {"token": token, "newPassword": newPassword},
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception("Failed to reset password");
+    }
+
+    debugPrint("Password reset successful");
+    return true;
   }
 }

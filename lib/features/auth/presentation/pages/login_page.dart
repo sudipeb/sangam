@@ -90,7 +90,7 @@ class LoginPage extends StatelessWidget {
                           const SizedBox(height: 8),
                           BlocBuilder<AuthBloc, AuthState>(
                             builder: (context, state) {
-                              final isObscure = state is AuthInitial
+                              final isObscure = state is AuthFormState
                                   ? state.obscurePassword
                                   : true;
 
@@ -127,7 +127,7 @@ class LoginPage extends StatelessWidget {
                             children: [
                               BlocBuilder<AuthBloc, AuthState>(
                                 builder: (context, state) {
-                                  final isAgreed = state is AuthInitial
+                                  final isAgreed = state is AuthFormState
                                       ? state.isAgreed
                                       : false;
                                   return IconButton(

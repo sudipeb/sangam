@@ -172,18 +172,49 @@ class RegisterRouteArgs {
 
 /// generated route for
 /// [_i5.ResetPasswordPage]
-class ResetPasswordRoute extends _i7.PageRouteInfo<void> {
-  const ResetPasswordRoute({List<_i7.PageRouteInfo>? children})
-    : super(ResetPasswordRoute.name, initialChildren: children);
+class ResetPasswordRoute extends _i7.PageRouteInfo<ResetPasswordRouteArgs> {
+  ResetPasswordRoute({
+    required String token,
+    _i8.Key? key,
+    List<_i7.PageRouteInfo>? children,
+  }) : super(
+         ResetPasswordRoute.name,
+         args: ResetPasswordRouteArgs(token: token, key: key),
+         initialChildren: children,
+       );
 
   static const String name = 'ResetPasswordRoute';
 
   static _i7.PageInfo page = _i7.PageInfo(
     name,
     builder: (data) {
-      return const _i5.ResetPasswordPage();
+      final args = data.argsAs<ResetPasswordRouteArgs>();
+      return _i5.ResetPasswordPage(token: args.token, key: args.key);
     },
   );
+}
+
+class ResetPasswordRouteArgs {
+  const ResetPasswordRouteArgs({required this.token, this.key});
+
+  final String token;
+
+  final _i8.Key? key;
+
+  @override
+  String toString() {
+    return 'ResetPasswordRouteArgs{token: $token, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ResetPasswordRouteArgs) return false;
+    return token == other.token && key == other.key;
+  }
+
+  @override
+  int get hashCode => token.hashCode ^ key.hashCode;
 }
 
 /// generated route for

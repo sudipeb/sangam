@@ -9,6 +9,7 @@ import 'package:sangam/features/auth/data/repository/auth_repo_impl.dart';
 import 'package:sangam/features/auth/domain/usecase/forgot_password.dart';
 import 'package:sangam/features/auth/domain/usecase/login_user.dart';
 import 'package:sangam/features/auth/domain/usecase/register_user.dart';
+import 'package:sangam/features/auth/domain/usecase/reset_password.dart';
 import 'package:sangam/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sangam/router/app_router.dart';
 
@@ -27,6 +28,7 @@ void main() async {
             loginUser: LoginUser(authRepository),
             registerUser: RegisterUser(authRepository),
             forgotPassword: ForgotPasswordUser(authRepository),
+            resetpassword: ResetUserPassword(authRepository),
           ),
         ),
       ],

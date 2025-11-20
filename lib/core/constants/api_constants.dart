@@ -9,4 +9,5 @@ class ApiEndpoints {
   static const String profile = "api/v1/auth/profile";
   static const String refreshToken = "api/v1/auth/refresh-token";
   static const String forgotPassword = "api/v1/auth/forgot-password";
+  static const String resetPassword = "api/v1/auth/reset-password";
 }

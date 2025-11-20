@@ -20,3 +20,16 @@ class AuthFailure extends AuthState {
   final String message;
   AuthFailure({required this.message});
 }
+
+///Forgot Password states
+class ForgotPasswordLoading extends AuthState {}
+
+class ForgotPasswordSuccess extends AuthState {
+  final String message;
+  ForgotPasswordSuccess({this.message = "Password reset email sent!"});
+}
+
+class ForgotPasswordFailure extends AuthState {
+  final String error;
+  ForgotPasswordFailure(this.error);
+}

@@ -57,4 +57,16 @@ class AuthRemoteDataSource {
 
     return UserModel.fromJson(response.data['user']);
   }
+
+  Future<User> forgotpassword(String email) async {
+    final response = await apiClient.post(
+      ApiEndpoints.forgotPassword,
+      data: {"email": email},
+    );
+    if (response.data['user'] == null) {
+      throw Exception("Cant change the password");
+    }
+
+    return UserModel.fromJson(response.data['user']);
+  }
 }

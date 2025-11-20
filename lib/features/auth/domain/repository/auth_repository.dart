@@ -7,4 +7,5 @@ abstract class AuthRepository {
 
   /// Registers a new user with the given [name], [email], and [password].
   Future<User> register(String name, String email, String password);
+  Future<User> forgotpassword(String email);
 }

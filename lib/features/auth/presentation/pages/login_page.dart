@@ -146,7 +146,9 @@ class LoginPage extends StatelessWidget {
                             ],
                           ),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              context.router.push(ForgotPasswordRoute());
+                            },
                             child: Text(
                               "Forgot Password?",
                               style: Theme.of(context).textTheme.bodyMedium

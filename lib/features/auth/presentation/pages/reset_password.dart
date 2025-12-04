@@ -15,7 +15,7 @@ class ResetPasswordPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthBloc, AuthState>(
+    return BlocListener<ResetPasswordBloc, ResetPasswordState>(
       listener: (context, state) {
         // Note: Reset password uses a different bloc/state - this might need adjustment
         // For now, keeping the structure similar to other auth pages
@@ -47,7 +47,7 @@ class ResetPasswordPage extends StatelessWidget {
                     hintText: "Enter New Password",
                     border: OutlineInputBorder(),
                   ),
-                  obscureText: true,
+                  obscureText: false,
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
@@ -56,7 +56,7 @@ class ResetPasswordPage extends StatelessWidget {
 
                     if (newPassword.isEmpty) return;
                     debugPrint("Reset token: $token");
-                    context.read<AuthBloc>().add(
+                    context.read<ResetPasswordBloc>().add(
                       ResetPasswordRequested(
                         token: token,
                         password: newPassword,

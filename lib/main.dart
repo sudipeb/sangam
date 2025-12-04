@@ -6,10 +6,10 @@ import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:sangam/core/theme/theme.dart';
 import 'package:sangam/features/auth/data/datasource/auth_remote_data_source.dart';
 import 'package:sangam/features/auth/data/repository/auth_repo_impl.dart';
-import 'package:sangam/features/auth/domain/usecase/forgot_password.dart';
+
 import 'package:sangam/features/auth/domain/usecase/login_user.dart';
 import 'package:sangam/features/auth/domain/usecase/register_user.dart';
-import 'package:sangam/features/auth/domain/usecase/reset_password.dart';
+
 import 'package:sangam/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sangam/router/app_router.dart';
 
@@ -27,8 +27,6 @@ void main() async {
           create: (_) => AuthBloc(
             loginUser: LoginUser(authRepository),
             registerUser: RegisterUser(authRepository),
-            forgotPassword: ForgotPasswordUser(authRepository),
-            resetpassword: ResetUserPassword(authRepository),
           ),
         ),
       ],

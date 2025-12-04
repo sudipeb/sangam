@@ -1,51 +1,31 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:sangam/features/auth/domain/entity/user.dart';
+part 'auth_state.freezed.dart';
 
-///provides the different possible states
-abstract class AuthState {}
-
-class AuthInitial extends AuthState {}
-
-class AuthLoading extends AuthState {}
-
-class AuthSuccess extends AuthState {
-  final User user;
-  AuthSuccess({required this.user});
+@freezed
+abstract class AuthState with _$AuthState {
+  const factory AuthState.initial() = _Initial;
+  const factory AuthState.loading() = _Loading;
+  const factory AuthState.success(User user) = _Success;
+  const factory AuthState.failure(String message) = _Failure;
+  const factory AuthState.formstate(bool obscurePassword, bool isAgreed) =
+      _Form;
 }
 
-class AuthFailure extends AuthState {
-  final String message;
-  AuthFailure({required this.message});
+@freezed
+abstract class ForgotPasswordState with _$ForgotPasswordState {
+  const factory ForgotPasswordState.loading() = _ForgotPasswordLoading;
+  const factory ForgotPasswordState.success(String resetPasswordToken) =
+      _ForgotPasswordSuccess;
+  const factory ForgotPasswordState.failure(String error) =
+      _ForgotPasswordFailure;
 }
 
-class AuthFormState extends AuthState {
-  final bool obscurePassword;
-  final bool isAgreed;
-
-  AuthFormState({this.obscurePassword = true, this.isAgreed = false});
-}
-
-///Forgot Password states
-class ForgotPasswordLoading extends AuthState {}
-
-class ForgotPasswordSuccess extends AuthState {
-  final String resetPasswordToken;
-  ForgotPasswordSuccess(this.resetPasswordToken);
-}
-
-class ForgotPasswordFailure extends AuthState {
-  final String error;
-  ForgotPasswordFailure(this.error);
-}
-
-//reset password
-class ResetPasswordLoading extends AuthState {}
-
-class ResetPasswordSuccess extends AuthState {
-  final String message;
-  ResetPasswordSuccess(this.message);
-}
-
-class ResetPasswordFailure extends AuthState {
-  final String error;
-  ResetPasswordFailure(this.error);
+@freezed
+abstract class ResetPasswordState with _$ResetPasswordState {
+  const factory ResetPasswordState.loading() = _ResetPasswordLoading;
+  const factory ResetPasswordState.success(String message) =
+      _ResetPasswordSuccess;
+  const factory ResetPasswordState.failure(String error) =
+      _ResetPasswordFailure;
 }

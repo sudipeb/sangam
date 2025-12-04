@@ -11,11 +11,30 @@ import 'package:sangam/router/app_router.gr.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @RoutePage()
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize form state when page loads
+    context.read<AuthBloc>().add(InitializeFormState());
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,23 +42,27 @@ class LoginPage extends StatelessWidget {
       body: Center(
         child: BlocListener<AuthBloc, AuthState>(
           listener: (context, state) async {
-            if (state is AuthSuccess) {
-              final scaffoldMessenger = ScaffoldMessenger.of(context);
-              final router = AutoRouter.of(context);
+            await state.maybeWhen(
+              success: (user) async {
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+                final router = AutoRouter.of(context);
 
-              final prefs = await SharedPreferences.getInstance();
-              await prefs.setBool("is_logged_in", true);
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setBool("is_logged_in", true);
 
-              scaffoldMessenger.showSnackBar(
-                SnackBar(content: Text("Welcome ${state.user.name}!")),
-              );
+                scaffoldMessenger.showSnackBar(
+                  SnackBar(content: Text("Welcome ${user.name}!")),
+                );
 
-              router.replace(HomeLandingRoute());
-            } else if (state is AuthFailure) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(state.message)));
-            }
+                router.replace(HomeLandingRoute());
+              },
+              failure: (message) async {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(message)));
+              },
+              orElse: () async {},
+            );
           },
           child: Stack(
             children: [
@@ -90,29 +113,49 @@ class LoginPage extends StatelessWidget {
                           const SizedBox(height: 8),
                           BlocBuilder<AuthBloc, AuthState>(
                             builder: (context, state) {
-                              final isObscure = state is AuthFormState
-                                  ? state.obscurePassword
-                                  : true;
-
-                              return softField(
-                                child: TextFormField(
-                                  controller: _passwordController,
-                                  obscureText: isObscure,
-                                  decoration: InputDecoration(
-                                    hintText: "Enter Password",
-                                    border: const OutlineInputBorder(),
-                                    suffixIcon: IconButton(
-                                      icon: Icon(
-                                        isObscure
-                                            ? Icons.visibility_off
-                                            : Icons.visibility,
+                              return state.maybeWhen(
+                                formstate: (obscurePassword, isAgreed) {
+                                  return softField(
+                                    child: TextFormField(
+                                      controller: _passwordController,
+                                      obscureText: obscurePassword,
+                                      decoration: InputDecoration(
+                                        hintText: "Enter Password",
+                                        border: const OutlineInputBorder(),
+                                        suffixIcon: IconButton(
+                                          icon: Icon(
+                                            obscurePassword
+                                                ? Icons.visibility_off
+                                                : Icons.visibility,
+                                          ),
+                                          onPressed: () => context
+                                              .read<AuthBloc>()
+                                              .add(TogglePasswordVisibility()),
+                                        ),
                                       ),
-                                      onPressed: () => context
-                                          .read<AuthBloc>()
-                                          .add(TogglePasswordVisibility()),
                                     ),
-                                  ),
-                                ),
+                                  );
+                                },
+                                orElse: () {
+                                  return softField(
+                                    child: TextFormField(
+                                      controller: _passwordController,
+                                      obscureText: true,
+                                      decoration: InputDecoration(
+                                        hintText: "Enter Password",
+                                        border: const OutlineInputBorder(),
+                                        suffixIcon: IconButton(
+                                          icon: const Icon(
+                                            Icons.visibility_off,
+                                          ),
+                                          onPressed: () => context
+                                              .read<AuthBloc>()
+                                              .add(TogglePasswordVisibility()),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
                               );
                             },
                           ),
@@ -127,18 +170,29 @@ class LoginPage extends StatelessWidget {
                             children: [
                               BlocBuilder<AuthBloc, AuthState>(
                                 builder: (context, state) {
-                                  final isAgreed = state is AuthFormState
-                                      ? state.isAgreed
-                                      : false;
-                                  return IconButton(
-                                    onPressed: () => context
-                                        .read<AuthBloc>()
-                                        .add(ToggleAgreement()),
-                                    icon: Icon(
-                                      isAgreed
-                                          ? Icons.check_circle
-                                          : Icons.radio_button_off,
-                                    ),
+                                  return state.maybeWhen(
+                                    formstate: (obscurePassword, isAgreed) {
+                                      return IconButton(
+                                        onPressed: () => context
+                                            .read<AuthBloc>()
+                                            .add(ToggleAgreement()),
+                                        icon: Icon(
+                                          isAgreed
+                                              ? Icons.check_circle
+                                              : Icons.radio_button_off,
+                                        ),
+                                      );
+                                    },
+                                    orElse: () {
+                                      return IconButton(
+                                        onPressed: () => context
+                                            .read<AuthBloc>()
+                                            .add(ToggleAgreement()),
+                                        icon: const Icon(
+                                          Icons.radio_button_off,
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
                               ),
@@ -211,15 +265,15 @@ class LoginPage extends StatelessWidget {
               // Loading Overlay
               BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
-                  if (state is AuthLoading) {
-                    return SizedBox.expand(
+                  return state.maybeWhen(
+                    loading: () => SizedBox.expand(
                       child: Container(
                         color: Colors.black38,
                         child: const Center(child: CircularProgressIndicator()),
                       ),
-                    );
-                  }
-                  return const SizedBox.shrink();
+                    ),
+                    orElse: () => const SizedBox.shrink(),
+                  );
                 },
               ),
             ],

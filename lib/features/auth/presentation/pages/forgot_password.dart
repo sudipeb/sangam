@@ -16,32 +16,38 @@ class ForgotPasswordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocListener<AuthBloc, AuthState>(
+      body: BlocListener<ForgotPasswordBloc, ForgotPasswordState>(
         listener: (context, state) {
-          if (state is ForgotPasswordSuccess) {
-            final token = state.resetPasswordToken;
+          state.maybeWhen(
+            success: (resetPasswordToken) {
+              // Navigate to ResetPasswordPage with token
+              context.router.push(
+                ResetPasswordRoute(token: resetPasswordToken),
+              );
 
-            // Navigate to ResetPasswordPage with token
-            context.router.push(ResetPasswordRoute(token: token));
-
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text("Reset link sent!")));
-          } else if (state is ForgotPasswordFailure) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
-          } else if (state is ForgotPasswordLoading) {
-            // Optional: show a loading overlay
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (_) => const Center(child: CircularProgressIndicator()),
-            );
-          } else {
-            // Close the loading overlay if any
-            if (Navigator.canPop(context)) Navigator.pop(context);
-          }
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text("Reset link sent!")));
+            },
+            failure: (error) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(error)));
+            },
+            loading: () {
+              // Optional: show a loading overlay
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) =>
+                    const Center(child: CircularProgressIndicator()),
+              );
+            },
+            orElse: () {
+              // Close the loading overlay if any
+              if (Navigator.canPop(context)) Navigator.pop(context);
+            },
+          );
         },
         child: Padding(
           padding: const EdgeInsets.all(20.0),

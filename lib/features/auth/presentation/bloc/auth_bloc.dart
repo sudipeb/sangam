@@ -11,103 +11,128 @@ import 'package:sangam/features/auth/presentation/bloc/auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUser loginUser;
   final RegisterUser registerUser;
-  final ForgotPasswordUser forgotPassword;
-  final ResetUserPassword resetpassword;
-  AuthBloc({
-    required this.loginUser,
-    required this.registerUser,
-    required this.forgotPassword,
-    required this.resetpassword,
-  }) : super(AuthInitial()) {
+  AuthBloc({required this.loginUser, required this.registerUser})
+    : super(AuthState.initial()) {
     // Handler for LoginRequested event
     on<LoginRequested>((event, emit) async {
-      emit(AuthLoading());
+      emit(AuthState.loading());
       try {
         final user = await loginUser.execute(event.email, event.password);
-        emit(AuthSuccess(user: user));
+        emit(AuthState.success(user));
       } catch (e) {
         if (e is NetworkExceptions) {
-          emit(AuthFailure(message: e.message));
+          emit(AuthState.failure(e.message));
         } else {
-          emit(AuthFailure(message: e.toString()));
+          emit(AuthState.failure(e.toString()));
         }
       }
     });
     // Handler for RegisterRequested event
     on<RegisterRequested>((event, emit) async {
-      emit(AuthLoading());
+      emit(AuthState.loading());
       try {
         final user = await registerUser.execute(
           event.name,
           event.email,
           event.password,
         );
-        emit(AuthSuccess(user: user));
+        emit(AuthState.success(user));
       } catch (e) {
         if (e is NetworkExceptions) {
-          emit(AuthFailure(message: e.message));
+          emit(AuthState.failure(e.message));
         } else {
-          emit(AuthFailure(message: e.toString()));
+          emit(AuthState.failure(e.toString()));
         }
       }
     });
     on<TogglePasswordVisibility>(_onTogglePasswordVisibility);
     on<ToggleAgreement>(_onToggleAgreement);
-    on<ForgotPassword>(_onForgotPassword);
-    on<ResetPasswordRequested>(_onResetPassword);
+    on<InitializeFormState>(_onInitializeFormState);
   }
   void _onTogglePasswordVisibility(
     TogglePasswordVisibility event,
     Emitter<AuthState> emit,
   ) {
-    final currentState = state as AuthFormState;
-    emit(
-      AuthFormState(
-        obscurePassword: !currentState.obscurePassword,
-        isAgreed: currentState.isAgreed,
-      ),
+    state.maybeMap(
+      formstate: (currentState) {
+        emit(
+          AuthState.formstate(
+            !currentState.obscurePassword,
+            currentState.isAgreed,
+          ),
+        );
+      },
+      orElse: () {
+        // Initialize form state with toggled password visibility
+        emit(AuthState.formstate(false, false)); // password visible, not agreed
+      },
     );
   }
 
   void _onToggleAgreement(ToggleAgreement event, Emitter<AuthState> emit) {
-    final currentState = state as AuthFormState;
-    emit(
-      AuthFormState(
-        obscurePassword: currentState.obscurePassword,
-        isAgreed: !currentState.isAgreed,
-      ),
+    state.maybeMap(
+      formstate: (currentState) {
+        emit(
+          AuthState.formstate(
+            currentState.obscurePassword,
+            !currentState.isAgreed,
+          ),
+        );
+      },
+      orElse: () {
+        // Initialize form state with agreement checked
+        emit(AuthState.formstate(true, true)); // password obscured, agreed
+      },
     );
   }
 
+  void _onInitializeFormState(
+    InitializeFormState event,
+    Emitter<AuthState> emit,
+  ) {
+    // Initialize form state with default values: password obscured, not agreed
+    emit(AuthState.formstate(true, false));
+  }
+}
+
+class ForgotPasswordBloc extends Bloc<AuthEvent, ForgotPasswordState> {
+  final ForgotPasswordUser forgotPassword;
+  ForgotPasswordBloc({required this.forgotPassword})
+    : super(ForgotPasswordState.loading());
   Future<void> _onForgotPassword(
     ForgotPassword event,
-    Emitter<AuthState> emit,
+    Emitter<ForgotPasswordState> emit,
   ) async {
-    emit(ForgotPasswordLoading());
+    emit(ForgotPasswordState.loading());
     try {
       // Call the use case here and await the result
       final resetToken = await forgotPassword.execute(event.email);
       emit(
-        ForgotPasswordSuccess(resetToken),
+        ForgotPasswordState.success(resetToken),
       ); // or ForgotPasswordSuccess(user: user) if you have a separate state
     } catch (e) {
-      emit(ForgotPasswordFailure(e.toString()));
+      emit(ForgotPasswordState.failure(e.toString()));
     }
   }
+}
 
+class ResetPasswordBloc extends Bloc<AuthEvent, ResetPasswordState> {
+  final ResetUserPassword resetpassword;
+  ResetPasswordBloc({required this.resetpassword})
+    : super(ResetPasswordState.loading());
   Future<void> _onResetPassword(
     ResetPasswordRequested event,
-    Emitter<AuthState> emit,
+    Emitter<ResetPasswordState> emit,
   ) async {
-    emit(ResetPasswordLoading());
+    emit(ResetPasswordState.loading());
     try {
       // Await the reset password execution
       final result = await resetpassword.execute(event.token, event.password);
 
       // Emit success with a message or the returned User
-      emit(ResetPasswordSuccess("Password successfully reset!"));
+      emit(ResetPasswordState.success("Password successfully reset!,$result"));
     } catch (e) {
-      emit(ResetPasswordFailure(e.toString()));
+      emit(ResetPasswordState.failure(e.toString()));
     }
   }
 }

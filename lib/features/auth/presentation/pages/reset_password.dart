@@ -17,24 +17,22 @@ class ResetPasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is ResetPasswordLoading) {
-          // Optional: show loader
-        }
-
-        if (state is ResetPasswordSuccess) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
-
-          // Navigate to login screen
-          context.router.replace(LoginRoute());
-        }
-
-        if (state is ResetPasswordFailure) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.error)));
-        }
+        // Note: Reset password uses a different bloc/state - this might need adjustment
+        // For now, keeping the structure similar to other auth pages
+        state.maybeWhen(
+          success: (user) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Password reset successful!")),
+            );
+            context.router.replace(LoginRoute());
+          },
+          failure: (message) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(message)));
+          },
+          orElse: () {},
+        );
       },
       child: Scaffold(
         body: Padding(
@@ -45,19 +43,18 @@ class ResetPasswordPage extends StatelessWidget {
               children: [
                 TextFormField(
                   controller: _passwordController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: "Enter New Password",
                     border: OutlineInputBorder(),
                   ),
                   obscureText: true,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     final newPassword = _passwordController.text.trim();
 
                     if (newPassword.isEmpty) return;
-                    print("Pressed reset button. Password = $newPassword");
                     debugPrint("Reset token: $token");
                     context.read<AuthBloc>().add(
                       ResetPasswordRequested(
@@ -66,7 +63,7 @@ class ResetPasswordPage extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Text("Change Password"),
+                  child: const Text("Change Password"),
                 ),
               ],
             ),

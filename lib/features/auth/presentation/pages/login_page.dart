@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
         child: BlocListener<AuthBloc, AuthState>(
           listener: (context, state) async {
             await state.maybeWhen(
-              success: (user) async {
+              loginSuccess: (user) async {
                 final scaffoldMessenger = ScaffoldMessenger.of(context);
                 final router = AutoRouter.of(context);
 

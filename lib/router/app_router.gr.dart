@@ -84,90 +84,34 @@ class HomeLandingRoute extends _i7.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.LoginPage]
-class LoginRoute extends _i7.PageRouteInfo<LoginRouteArgs> {
-  LoginRoute({_i8.Key? key, List<_i7.PageRouteInfo>? children})
-    : super(
-        LoginRoute.name,
-        args: LoginRouteArgs(key: key),
-        initialChildren: children,
-      );
+class LoginRoute extends _i7.PageRouteInfo<void> {
+  const LoginRoute({List<_i7.PageRouteInfo>? children})
+    : super(LoginRoute.name, initialChildren: children);
 
   static const String name = 'LoginRoute';
 
   static _i7.PageInfo page = _i7.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<LoginRouteArgs>(
-        orElse: () => const LoginRouteArgs(),
-      );
-      return _i3.LoginPage(key: args.key);
+      return const _i3.LoginPage();
     },
   );
 }
 
-class LoginRouteArgs {
-  const LoginRouteArgs({this.key});
-
-  final _i8.Key? key;
-
-  @override
-  String toString() {
-    return 'LoginRouteArgs{key: $key}';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! LoginRouteArgs) return false;
-    return key == other.key;
-  }
-
-  @override
-  int get hashCode => key.hashCode;
-}
-
 /// generated route for
 /// [_i4.RegisterPage]
-class RegisterRoute extends _i7.PageRouteInfo<RegisterRouteArgs> {
-  RegisterRoute({_i8.Key? key, List<_i7.PageRouteInfo>? children})
-    : super(
-        RegisterRoute.name,
-        args: RegisterRouteArgs(key: key),
-        initialChildren: children,
-      );
+class RegisterRoute extends _i7.PageRouteInfo<void> {
+  const RegisterRoute({List<_i7.PageRouteInfo>? children})
+    : super(RegisterRoute.name, initialChildren: children);
 
   static const String name = 'RegisterRoute';
 
   static _i7.PageInfo page = _i7.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<RegisterRouteArgs>(
-        orElse: () => const RegisterRouteArgs(),
-      );
-      return _i4.RegisterPage(key: args.key);
+      return const _i4.RegisterPage();
     },
   );
-}
-
-class RegisterRouteArgs {
-  const RegisterRouteArgs({this.key});
-
-  final _i8.Key? key;
-
-  @override
-  String toString() {
-    return 'RegisterRouteArgs{key: $key}';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! RegisterRouteArgs) return false;
-    return key == other.key;
-  }
-
-  @override
-  int get hashCode => key.hashCode;
 }
 
 /// generated route for

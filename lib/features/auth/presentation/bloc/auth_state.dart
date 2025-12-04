@@ -6,7 +6,8 @@ part 'auth_state.freezed.dart';
 abstract class AuthState with _$AuthState {
   const factory AuthState.initial() = _Initial;
   const factory AuthState.loading() = _Loading;
-  const factory AuthState.success(User user) = _Success;
+  const factory AuthState.registerSuccess(User user) = _RegisterSuccess;
+  const factory AuthState.loginSuccess(User user) = _LoginSuccess;
   const factory AuthState.failure(String message) = _Failure;
   const factory AuthState.formstate(bool obscurePassword, bool isAgreed) =
       _Form;

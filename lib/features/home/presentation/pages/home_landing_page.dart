@@ -9,6 +9,7 @@ class HomeLandingPage extends StatelessWidget {
   Widget build(context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           "Sangam",
           style: Theme.of(context).appBarTheme.titleTextStyle,

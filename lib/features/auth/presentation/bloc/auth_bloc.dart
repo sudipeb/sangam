@@ -18,7 +18,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthState.loading());
       try {
         final user = await loginUser.execute(event.email, event.password);
-        emit(AuthState.success(user));
+        emit(AuthState.loginSuccess(user));
       } catch (e) {
         if (e is NetworkExceptions) {
           emit(AuthState.failure(e.message));
@@ -36,7 +36,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           event.email,
           event.password,
         );
-        emit(AuthState.success(user));
+        emit(AuthState.registerSuccess(user));
       } catch (e) {
         if (e is NetworkExceptions) {
           emit(AuthState.failure(e.message));

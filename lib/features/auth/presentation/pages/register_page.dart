@@ -45,13 +45,13 @@ class _RegisterPageState extends State<RegisterPage> {
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           state.maybeWhen(
-            success: (user) {
+            registerSuccess: (user) async {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Registration successful. Please login.'),
                 ),
               );
-              context.router.pop();
+              context.router.replace(LoginRoute());
             },
             failure: (message) {
               ScaffoldMessenger.of(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sangam/core/constants/app_constants.dart';
+import 'package:sangam/core/utils/app_regex.dart';
 import 'package:sangam/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sangam/features/auth/presentation/bloc/auth_event.dart';
 import 'package:sangam/features/auth/presentation/bloc/auth_state.dart';
@@ -19,13 +20,15 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  //  Add Form key
+  final _formKey = GlobalKey<FormState>();
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    // Initialize form state when page loads
     context.read<AuthBloc>().add(InitializeFormState());
   }
 
@@ -69,196 +72,224 @@ class _LoginPageState extends State<LoginPage> {
               SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(30),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 50.h),
-                      Image.asset(ImageConstant.loginImage),
-                      const SizedBox(height: 20),
-                      Text(
-                        "Log in to your account",
-                        style: Theme.of(context).textTheme.headlineLarge
-                            ?.copyWith(color: Colors.blueAccent),
-                      ),
-                      SizedBox(height: 50.h),
-                      // Email Field
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Email",
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                          const SizedBox(height: 8),
-                          softField(
-                            child: TextFormField(
-                              controller: _emailController,
-                              decoration: const InputDecoration(
-                                hintText: "Enter your Email Address",
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      // Password Field
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Password",
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                          const SizedBox(height: 8),
-                          BlocBuilder<AuthBloc, AuthState>(
-                            builder: (context, state) {
-                              return state.maybeWhen(
-                                formstate: (obscurePassword, isAgreed) {
-                                  return softField(
-                                    child: TextFormField(
-                                      controller: _passwordController,
-                                      obscureText: obscurePassword,
-                                      decoration: InputDecoration(
-                                        hintText: "Enter Password",
-                                        border: const OutlineInputBorder(),
-                                        suffixIcon: IconButton(
-                                          icon: Icon(
-                                            obscurePassword
-                                                ? Icons.visibility_off
-                                                : Icons.visibility,
-                                          ),
-                                          onPressed: () => context
-                                              .read<AuthBloc>()
-                                              .add(TogglePasswordVisibility()),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                orElse: () {
-                                  return softField(
-                                    child: TextFormField(
-                                      controller: _passwordController,
-                                      obscureText: true,
-                                      decoration: InputDecoration(
-                                        hintText: "Enter Password",
-                                        border: const OutlineInputBorder(),
-                                        suffixIcon: IconButton(
-                                          icon: const Icon(
-                                            Icons.visibility_off,
-                                          ),
-                                          onPressed: () => context
-                                              .read<AuthBloc>()
-                                              .add(TogglePasswordVisibility()),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      // Remember Me + Forgot Password
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              BlocBuilder<AuthBloc, AuthState>(
-                                builder: (context, state) {
-                                  return state.maybeWhen(
-                                    formstate: (obscurePassword, isAgreed) {
-                                      return IconButton(
-                                        onPressed: () => context
-                                            .read<AuthBloc>()
-                                            .add(ToggleAgreement()),
-                                        icon: Icon(
-                                          isAgreed
-                                              ? Icons.check_circle
-                                              : Icons.radio_button_off,
-                                        ),
-                                      );
-                                    },
-                                    orElse: () {
-                                      return IconButton(
-                                        onPressed: () => context
-                                            .read<AuthBloc>()
-                                            .add(ToggleAgreement()),
-                                        icon: const Icon(
-                                          Icons.radio_button_off,
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                              const Text("Remember Me?"),
-                            ],
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              context.router.push(ForgotPasswordRoute());
-                            },
-                            child: Text(
-                              "Forgot Password?",
-                              style: Theme.of(context).textTheme.bodyMedium
-                                  ?.copyWith(
-                                    color: const Color.fromARGB(
-                                      255,
-                                      233,
-                                      64,
-                                      3,
-                                    ),
-                                  ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      // Login Button
-                      SizedBox(
-                        height: 50.h,
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor: Colors.blueGrey,
-                            shadowColor: Colors.grey,
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          onPressed: () {
-                            final email = _emailController.text.trim();
-                            final password = _passwordController.text.trim();
-                            if (email.isEmpty || password.isEmpty) return;
-
-                            context.read<AuthBloc>().add(
-                              LoginRequested(email, password),
-                            );
-                          },
-                          child: const Text("Login"),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 50.h),
+                        Image.asset(ImageConstant.loginImage),
+                        const SizedBox(height: 20),
+                        Text(
+                          "Log in to your account",
+                          style: Theme.of(context).textTheme.headlineLarge
+                              ?.copyWith(color: Colors.blueAccent),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      // Register Row
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text("Don't have an account?"),
-                          TextButton(
-                            onPressed: () =>
-                                context.router.push(RegisterRoute()),
-                            child: const Text("Create Account"),
+                        SizedBox(height: 50.h),
+                        // Email Field
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Email",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            const SizedBox(height: 8),
+                            softField(
+                              child: TextFormField(
+                                controller: _emailController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Email cannot be empty";
+                                  } else if (!AppRegex.emailRegex.hasMatch(
+                                    value,
+                                  )) {
+                                    return "Enter a valid email";
+                                  }
+                                  return null;
+                                },
+                                decoration: const InputDecoration(
+                                  hintText: "Enter your Email Address",
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        // Password Field
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Password",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            const SizedBox(height: 8),
+                            BlocBuilder<AuthBloc, AuthState>(
+                              builder: (context, state) {
+                                return state.maybeWhen(
+                                  formstate: (obscurePassword, isAgreed) {
+                                    return softField(
+                                      child: TextFormField(
+                                        controller: _passwordController,
+                                        obscureText: obscurePassword,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Password cannot be empty";
+                                          } else if (!AppRegex.passwordRegex
+                                              .hasMatch(value)) {
+                                            return "Password must be 8+ chars, include upper, lower, number & special char";
+                                          }
+                                          return null;
+                                        },
+                                        decoration: InputDecoration(
+                                          hintText: "Enter Password",
+                                          border: const OutlineInputBorder(),
+                                          suffixIcon: IconButton(
+                                            icon: Icon(
+                                              obscurePassword
+                                                  ? Icons.visibility_off
+                                                  : Icons.visibility,
+                                            ),
+                                            onPressed: () =>
+                                                context.read<AuthBloc>().add(
+                                                  TogglePasswordVisibility(),
+                                                ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  orElse: () {
+                                    return softField(
+                                      child: TextFormField(
+                                        controller: _passwordController,
+                                        obscureText: true,
+                                        decoration: InputDecoration(
+                                          hintText: "Enter Password",
+                                          border: const OutlineInputBorder(),
+                                          suffixIcon: IconButton(
+                                            icon: const Icon(
+                                              Icons.visibility_off,
+                                            ),
+                                            onPressed: () =>
+                                                context.read<AuthBloc>().add(
+                                                  TogglePasswordVisibility(),
+                                                ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        // Remember Me && Forgot Password
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                BlocBuilder<AuthBloc, AuthState>(
+                                  builder: (context, state) {
+                                    return state.maybeWhen(
+                                      formstate: (obscurePassword, isAgreed) {
+                                        return IconButton(
+                                          onPressed: () => context
+                                              .read<AuthBloc>()
+                                              .add(ToggleAgreement()),
+                                          icon: Icon(
+                                            isAgreed
+                                                ? Icons.check_circle
+                                                : Icons.radio_button_off,
+                                          ),
+                                        );
+                                      },
+                                      orElse: () {
+                                        return IconButton(
+                                          onPressed: () => context
+                                              .read<AuthBloc>()
+                                              .add(ToggleAgreement()),
+                                          icon: const Icon(
+                                            Icons.radio_button_off,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                                const Text("Remember Me?"),
+                              ],
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                context.router.push(ForgotPasswordRoute());
+                              },
+                              child: Text(
+                                "Forgot Password?",
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      color: const Color.fromARGB(
+                                        255,
+                                        233,
+                                        64,
+                                        3,
+                                      ),
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        // Login Button
+                        SizedBox(
+                          height: 50.h,
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.blueGrey,
+                              shadowColor: Colors.grey,
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () {
+                              //  Trigger validation
+                              if (_formKey.currentState!.validate()) {
+                                final email = _emailController.text.trim();
+                                final password = _passwordController.text
+                                    .trim();
+
+                                context.read<AuthBloc>().add(
+                                  LoginRequested(email, password),
+                                );
+                              }
+                              // Invalid fields will automatically show errors
+                            },
+                            child: const Text("Login"),
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        const SizedBox(height: 20),
+                        // Register Row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text("Don't have an account?"),
+                            TextButton(
+                              onPressed: () =>
+                                  context.router.push(RegisterRoute()),
+                              child: const Text("Create Account"),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

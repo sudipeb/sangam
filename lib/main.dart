@@ -6,9 +6,11 @@ import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:sangam/core/theme/theme.dart';
 import 'package:sangam/features/auth/data/datasource/auth_remote_data_source.dart';
 import 'package:sangam/features/auth/data/repository/auth_repo_impl.dart';
+import 'package:sangam/features/auth/domain/usecase/forgot_password.dart';
 
 import 'package:sangam/features/auth/domain/usecase/login_user.dart';
 import 'package:sangam/features/auth/domain/usecase/register_user.dart';
+import 'package:sangam/features/auth/domain/usecase/reset_password.dart';
 
 import 'package:sangam/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sangam/router/app_router.dart';
@@ -17,9 +19,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('authBox');
+
   final authRepository = AuthRepositoryImpl(
     remoteDataSource: AuthRemoteDataSource(),
   );
+  final forgotPassword = ForgotPasswordUser(authRepository);
+  final resetPassword = ResetUserPassword(authRepository);
   runApp(
     MultiBlocProvider(
       providers: [
@@ -28,6 +33,12 @@ void main() async {
             loginUser: LoginUser(authRepository),
             registerUser: RegisterUser(authRepository),
           ),
+        ),
+        BlocProvider(
+          create: (_) => ForgotPasswordBloc(forgotPassword: forgotPassword),
+        ),
+        BlocProvider(
+          create: (_) => ResetPasswordBloc(resetpassword: resetPassword),
         ),
       ],
       child: MyApp(),

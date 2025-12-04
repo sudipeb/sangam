@@ -83,6 +83,8 @@ class ForgotPasswordPage extends StatelessWidget {
                       );
                       return;
                     }
+
+                    ///TODO:fIX THIS DIRTY STATE ERROR
                     context.read<AuthBloc>().add(ForgotPassword(email));
                   },
                   child: const Text("Send Password Change Link"),

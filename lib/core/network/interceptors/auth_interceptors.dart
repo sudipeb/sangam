@@ -56,7 +56,7 @@ class AuthInterceptor extends Interceptor {
           return handler.resolve(cloneReq);
         }
       } catch (e) {
-        print('Refresh token failed: $e');
+        debugPrint('Refresh token failed: $e');
         await _storage.deleteAll(); // clear tokens on failure
         return handler.reject(err);
       }

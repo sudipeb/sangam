@@ -17,8 +17,6 @@ class ResetPasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<ResetPasswordBloc, ResetPasswordState>(
       listener: (context, state) {
-        // Note: Reset password uses a different bloc/state - this might need adjustment
-        // For now, keeping the structure similar to other auth pages
         state.maybeWhen(
           success: (user) {
             ScaffoldMessenger.of(context).showSnackBar(

@@ -98,7 +98,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 class ForgotPasswordBloc extends Bloc<AuthEvent, ForgotPasswordState> {
   final ForgotPasswordUser forgotPassword;
   ForgotPasswordBloc({required this.forgotPassword})
-    : super(ForgotPasswordState.loading());
+    : super(ForgotPasswordState.loading()) {
+    on<ForgotPassword>(_onForgotPassword);
+  }
   Future<void> _onForgotPassword(
     ForgotPassword event,
     Emitter<ForgotPasswordState> emit,
@@ -119,7 +121,9 @@ class ForgotPasswordBloc extends Bloc<AuthEvent, ForgotPasswordState> {
 class ResetPasswordBloc extends Bloc<AuthEvent, ResetPasswordState> {
   final ResetUserPassword resetpassword;
   ResetPasswordBloc({required this.resetpassword})
-    : super(ResetPasswordState.loading());
+    : super(ResetPasswordState.loading()) {
+    on<ResetPasswordRequested>(_onResetPassword);
+  }
   Future<void> _onResetPassword(
     ResetPasswordRequested event,
     Emitter<ResetPasswordState> emit,

@@ -20,7 +20,6 @@ class ForgotPasswordPage extends StatelessWidget {
         listener: (context, state) {
           state.maybeWhen(
             success: (resetPasswordToken) {
-              // Navigate to ResetPasswordPage with token
               context.router.push(
                 ResetPasswordRoute(token: resetPasswordToken),
               );

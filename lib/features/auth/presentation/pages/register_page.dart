@@ -13,7 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
 class RegisterPage extends StatefulWidget {
-  RegisterPage({super.key});
+  const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -51,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   content: Text('Registration successful. Please login.'),
                 ),
               );
-              context.router.push(LoginRoute());
+              context.router.pop();
             },
             failure: (message) {
               ScaffoldMessenger.of(

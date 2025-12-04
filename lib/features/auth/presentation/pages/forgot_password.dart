@@ -84,7 +84,7 @@ class ForgotPasswordPage extends StatelessWidget {
                       return;
                     }
 
-                    ///TODO:fIX THIS DIRTY STATE ERROR
+
                     context.read<ForgotPasswordBloc>().add(
                       ForgotPassword(email),
                     );

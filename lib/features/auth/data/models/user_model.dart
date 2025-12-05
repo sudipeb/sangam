@@ -19,3 +19,4 @@ abstract class UserModel with _$UserModel implements User {
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
 }
+  

@@ -28,7 +28,9 @@ class NetworkExceptions implements Exception {
             case 404:
               return NetworkExceptions("Not found");
             case 409:
-              return NetworkExceptions("Email already registered. Please use a different email or login.");
+              return NetworkExceptions(
+                "Email already registered. Please use a different email or login.",
+              );
             case 500:
               return NetworkExceptions("Internal server error");
             default:

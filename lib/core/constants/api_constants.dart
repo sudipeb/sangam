@@ -18,3 +18,6 @@ class ApiEndpoints {
   static const String editPost = "api/v1/post/edit";
   static const String allPost = "api/v1/post/all";
 }
+
+///Username:sudipkoirala@gmail.com
+///password:SudipKoirala000@#

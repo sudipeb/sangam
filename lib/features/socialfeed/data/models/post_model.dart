@@ -1,15 +1,16 @@
+import 'package:sangam/features/socialfeed/domain/entities/post_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'post_model.freezed.dart';
 part 'post_model.g.dart';
 
-///[PostModel]represents data structure of a post
+/// [PostModel] represents data structure of a post coming from the backend
 ///
-///extends the [User] entity
+/// implements the [Post] entity
 @freezed
-abstract class PostModel with _$PostModel {
+abstract class PostModel with _$PostModel implements Post {
   const factory PostModel({
-    required String id,
+    @JsonKey(name: "_id") required String id,
     required String title,
     required String description,
     String? image,

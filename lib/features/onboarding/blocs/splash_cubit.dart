@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sangam/features/onboarding/cubit/splash_state.dart';
+import 'package:sangam/features/onboarding/blocs/splash_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashCubit extends Cubit<SplashState> {

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sangam/core/constants/app_constants.dart';
-import 'package:sangam/features/onboarding/cubit/splash_cubit.dart';
-import 'package:sangam/features/onboarding/cubit/splash_state.dart';
+import 'package:sangam/features/onboarding/blocs/splash_cubit.dart';
+import 'package:sangam/features/onboarding/blocs/splash_state.dart';
 import 'package:sangam/router/app_router.gr.dart';
 
 @RoutePage()

@@ -1,16 +1,20 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'post_model.dart';
 
-part 'post_model_response.freezed.dart';
-part 'post_model_response.g.dart';
+/// Response model for create post API
+class CreatePostResponse {
+  final String message;
+  final PostModel post;
 
-@freezed
-abstract class CreatePostResponse with _$CreatePostResponse {
-  const factory CreatePostResponse({
-    required String message,
-    required Post post,
-  }) = _CreatePostResponse;
+  const CreatePostResponse({required this.message, required this.post});
 
-  factory CreatePostResponse.fromJson(Map<String, dynamic> json) =>
-      _$CreatePostResponseFromJson(json);
+  factory CreatePostResponse.fromJson(Map<String, dynamic> json) {
+    return CreatePostResponse(
+      message: json['message'] ?? '',
+      post: PostModel.fromJson(json['post'] as Map<String, dynamic>),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'message': message, 'post': post.toJson()};
+  }
 }

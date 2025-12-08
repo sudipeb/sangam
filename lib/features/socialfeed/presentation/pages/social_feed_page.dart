@@ -5,7 +5,7 @@ import 'package:sangam/features/socialfeed/presentation/pages/create_post_page.d
 import 'package:sangam/features/socialfeed/presentation/blocs/feeds_bloc.dart';
 
 class SocialFeedPageClean extends StatelessWidget {
-  const SocialFeedPageClean({Key? key}) : super(key: key);
+  const SocialFeedPageClean({super.key});
 
   @override
   Widget build(BuildContext context) {

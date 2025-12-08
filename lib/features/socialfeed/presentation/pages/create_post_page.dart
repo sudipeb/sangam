@@ -4,7 +4,7 @@ import 'package:sangam/core/di/service_locator.dart';
 import 'package:sangam/features/socialfeed/presentation/blocs/create_post_bloc.dart';
 
 class CreatePostPageClean extends StatefulWidget {
-  const CreatePostPageClean({Key? key}) : super(key: key);
+  const CreatePostPageClean({super.key});
 
   @override
   State<CreatePostPageClean> createState() => _CreatePostPageCleanState();

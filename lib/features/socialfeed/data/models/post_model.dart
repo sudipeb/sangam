@@ -1,77 +1,26 @@
-import '../../domain/entities/post_entity.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-/// Data model for Post that can be serialized from/to JSON
-class PostModel {
-  final String id;
-  final String title;
-  final String description;
-  final String? image;
-  final String userId;
-  final int likesCount;
-  final int commentsCount;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+part 'post_model.freezed.dart';
+part 'post_model.g.dart';
 
-  const PostModel({
-    required this.id,
-    required this.title,
-    required this.description,
-    this.image,
-    required this.userId,
-    required this.likesCount,
-    required this.commentsCount,
-    required this.createdAt,
-    required this.updatedAt,
-  });
+///[PostModel]represents data structure of a post
+///
+///extends the [User] entity
+@freezed
+abstract class PostModel with _$PostModel {
+  const factory PostModel({
+    required String id,
+    required String title,
+    required String description,
+    String? image,
+    required String userId,
+    required int likesCount,
+    required int commentsCount,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) = _PostModel;
 
-  factory PostModel.fromJson(Map<String, dynamic> json) {
-    return PostModel(
-      id: json['_id'] ?? '',
-      title: json['title'] ?? '',
-      description: json['description'] ?? '',
-      image: json['image'],
-      userId: json['userId'] ?? '',
-      likesCount: json['likesCount'] ?? 0,
-      commentsCount: json['commentsCount'] ?? 0,
-      createdAt: DateTime.parse(
-        json['createdAt'] ?? DateTime.now().toIso8601String(),
-      ),
-      updatedAt: DateTime.parse(
-        json['updatedAt'] ?? DateTime.now().toIso8601String(),
-      ),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      '_id': id,
-      'title': title,
-      'description': description,
-      'image': image,
-      'userId': userId,
-      'likesCount': likesCount,
-      'commentsCount': commentsCount,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
-    };
-  }
-
-  /// Convert data model to domain entity
-  PostEntity toEntity({String userName = ''}) {
-    return PostEntity(
-      id: id,
-      title: title,
-      description: description,
-      image: image,
-      userId: userId,
-      userName: userName,
-      likesCount: likesCount,
-      commentsCount: commentsCount,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
-    );
-  }
+  /// Factory constructor to parse a JSON map into a [PostModel] object.
+  factory PostModel.fromJson(Map<String, dynamic> json) =>
+      _$PostModelFromJson(json);
 }
-
-/// Legacy alias for backwards compatibility
-typedef Post = PostModel;

@@ -1,20 +1,14 @@
-import 'post_model.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:sangam/features/socialfeed/data/models/post_model.dart';
+part 'post_model_response.freezed.dart';
+part 'post_model_response.g.dart';
 
-/// Response model for create post API
-class CreatePostResponse {
-  final String message;
-  final PostModel post;
-
-  const CreatePostResponse({required this.message, required this.post});
-
-  factory CreatePostResponse.fromJson(Map<String, dynamic> json) {
-    return CreatePostResponse(
-      message: json['message'] ?? '',
-      post: PostModel.fromJson(json['post'] as Map<String, dynamic>),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'message': message, 'post': post.toJson()};
-  }
+@freezed
+abstract class CreatePostResponseModel with _$CreatePostResponseModel {
+  const factory CreatePostResponseModel({
+    required String message,
+    required PostModel post,
+  }) = _CreatePostResponseModel;
+  factory CreatePostResponseModel.fromJson(Map<String, dynamic> json) =>
+      _$CreatePostResponseModelFromJson(json);
 }

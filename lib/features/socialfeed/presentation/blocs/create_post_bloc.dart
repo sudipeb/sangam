@@ -1,42 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/post_entity.dart';
+import 'package:sangam/features/socialfeed/presentation/blocs/create_post_event.dart';
+import 'package:sangam/features/socialfeed/presentation/blocs/create_post_state.dart';
 import '../../domain/usecases/create_post_usecase.dart';
 
-/// Events for create post
-abstract class CreatePostEvent {}
-
-class CreatePostRequested extends CreatePostEvent {
-  final String title;
-  final String description;
-  final String? image;
-
-  CreatePostRequested({
-    required this.title,
-    required this.description,
-    this.image,
-  });
-}
-
-class CreatePostReset extends CreatePostEvent {}
-
-/// States for create post
-abstract class CreatePostState {}
-
-class CreatePostInitial extends CreatePostState {}
-
-class CreatePostLoading extends CreatePostState {}
-
-class CreatePostSuccess extends CreatePostState {
-  final PostEntity post;
-
-  CreatePostSuccess(this.post);
-}
-
-class CreatePostFailure extends CreatePostState {
-  final String message;
-
-  CreatePostFailure(this.message);
-}
 
 /// BLoC for create post functionality
 class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {

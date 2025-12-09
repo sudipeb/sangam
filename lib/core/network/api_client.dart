@@ -54,8 +54,26 @@ class ApiClient {
     }
   }
 
+  /// POST request with multipart form data using [Dio.post] method
+  Future<Response> postMultipart(String path, {required FormData data}) async {
+    try {
+      return await dio.post(path, data: data);
+    } on DioException catch (e) {
+      throw NetworkExceptions.fromDioError(e);
+    }
+  }
+
   /// PUT request using [Dio.put] method
   Future<Response> put(String path, {dynamic data}) async {
+    try {
+      return await dio.put(path, data: data);
+    } on DioException catch (e) {
+      throw NetworkExceptions.fromDioError(e);
+    }
+  }
+
+  /// PUT request with multipart form data using [Dio.put] method
+  Future<Response> putMultipart(String path, {required FormData data}) async {
     try {
       return await dio.put(path, data: data);
     } on DioException catch (e) {

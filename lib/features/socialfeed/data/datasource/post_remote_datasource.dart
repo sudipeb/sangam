@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sangam/core/constants/api_constants.dart';
 import 'package:sangam/core/network/api_client.dart';
@@ -15,18 +16,35 @@ class PostRemoteDataSource {
     String? image,
   }) async {
     try {
-      final data = {
-        'title': title,
-        'description': description,
-        if (image != null && image.isNotEmpty) 'image': image,
-      };
+      final Response response;
 
-      debugPrint('Creating post with data: $data');
+      if (image != null && image.isNotEmpty) {
+        // Use multipart form data when image is provided
+        debugPrint('Creating post with image: $image');
 
-      final response = await apiClient.post(
-        ApiEndpoints.createPost,
-        data: data,
-      );
+        final formData = FormData.fromMap({
+          'title': title,
+          'description': description,
+          'image': await MultipartFile.fromFile(
+            image,
+            filename: image.split('/').last,
+          ),
+        });
+
+        debugPrint('Creating post with multipart data');
+
+        response = await apiClient.postMultipart(
+          ApiEndpoints.createPost,
+          data: formData,
+        );
+      } else {
+        // Use regular JSON data when no image
+        final data = {'title': title, 'description': description};
+
+        debugPrint('Creating post with data: $data');
+
+        response = await apiClient.post(ApiEndpoints.createPost, data: data);
+      }
 
       debugPrint('Create post response: ${response.data}');
 
@@ -198,16 +216,33 @@ class PostRemoteDataSource {
     String? image,
   }) async {
     try {
-      final data = {
-        'title': title,
-        'description': description,
-        if (image != null && image.isNotEmpty) 'image': image,
-      };
-
-      debugPrint('Editing post $postId with data: $data');
-
       final endpoint = '${ApiEndpoints.editPost}$postId';
-      final response = await apiClient.put(endpoint, data: data);
+      final Response response;
+
+      if (image != null && image.isNotEmpty) {
+        // Use multipart form data when image is provided
+        debugPrint('Editing post $postId with image: $image');
+
+        final formData = FormData.fromMap({
+          'title': title,
+          'description': description,
+          'image': await MultipartFile.fromFile(
+            image,
+            filename: image.split('/').last,
+          ),
+        });
+
+        debugPrint('Editing post with multipart data');
+
+        response = await apiClient.putMultipart(endpoint, data: formData);
+      } else {
+        // Use regular JSON data when no image
+        final data = {'title': title, 'description': description};
+
+        debugPrint('Editing post $postId with data: $data');
+
+        response = await apiClient.put(endpoint, data: data);
+      }
 
       debugPrint('Edit post response: ${response.data}');
 

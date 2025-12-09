@@ -30,4 +30,4 @@ class ApiEndpoints {
 
 ///username:sushantkhadka@gmail.com
 ///password:SushantKhadka@1234
-///
+/// bearer token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzY4NjBiZTA1ZThhYmQ2NWVmZDk5MiIsImp0aSI6IjBlY2FjMzljLWZiY2MtNGUxNS05MWZkLTk0MzljNTQ5YzUwZiIsImVtYWlsIjoic3VzaGFudGtoYWRrYUBnbWFpbC5jb20iLCJpYXQiOjE3NjUyNjE0MTUsImV4cCI6MTc2NTM0NzgxNX0.e29krdGHczuOFsiNyd9fUb6imYUpNYvnxB1dm0lLYzM

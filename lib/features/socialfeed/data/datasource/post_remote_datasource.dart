@@ -34,7 +34,15 @@ class PostRemoteDataSource {
         throw Exception('Empty response from server');
       }
 
-      return CreatePostResponseModel.fromJson(response.data);
+      // Transform the post data in the response before creating the model
+      final responseData = Map<String, dynamic>.from(response.data);
+      if (responseData['post'] != null) {
+        final postData = responseData['post'] as Map<String, dynamic>;
+        final transformedPost = _transformPostData(postData);
+        responseData['post'] = transformedPost.toJson();
+      }
+
+      return CreatePostResponseModel.fromJson(responseData);
     } catch (e) {
       debugPrint('Error creating post: $e');
       throw Exception('Failed to create post: $e');
@@ -83,7 +91,17 @@ class PostRemoteDataSource {
       }
     } catch (e) {
       debugPrint('Error fetching feeds: $e');
-      throw Exception('Failed to fetch feeds: $e');
+      if (e.toString().contains('timeout')) {
+        throw Exception(
+          'Server is taking too long to respond. Please try again later.',
+        );
+      } else if (e.toString().contains('connection')) {
+        throw Exception(
+          'Unable to connect to server. Please check your internet connection.',
+        );
+      } else {
+        throw Exception('Failed to fetch feeds: $e');
+      }
     }
   }
 
@@ -197,7 +215,7 @@ class PostRemoteDataSource {
         throw Exception('Invalid edit post response');
       }
 
-      return PostModel.fromJson(response.data['post']);
+      return _transformPostData(response.data['post'] as Map<String, dynamic>);
     } catch (e) {
       debugPrint('Error editing post: $e');
       throw Exception('Failed to edit post: $e');
@@ -227,6 +245,11 @@ class PostRemoteDataSource {
       // Create a copy of the post data to modify
       final transformedData = Map<String, dynamic>.from(postData);
 
+      // Map _id to id for PostModel.fromJson() compatibility
+      if (transformedData['_id'] != null) {
+        transformedData['id'] = transformedData['_id'];
+      }
+
       // Handle userId field - extract the _id if it's an object
       if (transformedData['userId'] is Map<String, dynamic>) {
         final userIdObj = transformedData['userId'] as Map<String, dynamic>;
@@ -234,7 +257,7 @@ class PostRemoteDataSource {
       }
 
       // Ensure required fields have safe default values
-      transformedData['_id'] = transformedData['_id'] ?? '';
+      transformedData['id'] = transformedData['id'] ?? '';
       transformedData['title'] = transformedData['title'] ?? '';
       transformedData['description'] = transformedData['description'] ?? '';
       transformedData['userId'] = transformedData['userId'] ?? '';

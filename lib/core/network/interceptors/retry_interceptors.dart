@@ -7,7 +7,7 @@ class RetryOnConnectionChangeInterceptor extends Interceptor {
   RetryOnConnectionChangeInterceptor({
     required this.dio,
     this.retires = 3,
-    this.retryDelays = const Duration(seconds: 3),
+    this.retryDelays = const Duration(seconds: 2),
   });
 
   @override
@@ -28,6 +28,8 @@ class RetryOnConnectionChangeInterceptor extends Interceptor {
 
   bool _shouldRetry(DioException err) {
     return err.type == DioExceptionType.connectionError ||
-        err.type == DioExceptionType.receiveTimeout;
+        err.type == DioExceptionType.receiveTimeout ||
+        err.type == DioExceptionType.connectionTimeout ||
+        err.type == DioExceptionType.sendTimeout;
   }
 }

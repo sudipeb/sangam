@@ -50,6 +50,9 @@ class _CreatePostPageCleanState extends State<CreatePostPageClean> {
         CreatePostRequested(
           title: _title.text.trim(),
           description: _description.text.trim(),
+          image: _imageController.text.isNotEmpty
+              ? _imageController.text
+              : null,
         ),
       );
     }
@@ -116,6 +119,58 @@ class _CreatePostPageCleanState extends State<CreatePostPageClean> {
                       ),
                       backgroundColor: const Color.fromARGB(255, 109, 47, 224),
                     ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Image preview
+                  ValueListenableBuilder<File?>(
+                    valueListenable: _imageNotifier,
+                    builder: (context, image, child) {
+                      if (image != null) {
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.grey.shade300),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Stack(
+                              children: [
+                                Image.file(
+                                  image,
+                                  height: 200,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
+                                Positioned(
+                                  top: 8,
+                                  right: 8,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _imageNotifier.value = null;
+                                      _imageController.clear();
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: const BoxDecoration(
+                                        color: Colors.red,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(
+                                        Icons.close,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
                   ),
                   BlocBuilder<CreatePostBloc, CreatePostState>(
                     builder: (context, state) {

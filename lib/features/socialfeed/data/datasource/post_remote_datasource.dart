@@ -180,6 +180,97 @@ class PostRemoteDataSource {
     }
   }
 
+  /// Fetch ALL posts from all pages. Returns complete list of PostModel objects.
+  Future<List<PostModel>> fetchAllPostsPaginated() async {
+    final List<PostModel> allPosts = [];
+    int currentPage = 1;
+    const int limit = 20; // Adjust based on your backend's pagination limit
+    bool hasMorePages = true;
+
+    try {
+      while (hasMorePages) {
+        debugPrint('Fetching page $currentPage of all posts');
+
+        final response = await apiClient.get(
+          ApiEndpoints.allPost,
+          queryParameters: {'page': currentPage, 'limit': limit},
+        );
+
+        debugPrint('All posts page $currentPage response: ${response.data}');
+
+        if (response.data == null) {
+          break;
+        }
+
+        List<PostModel> pagePosts = [];
+
+        // Handle different possible response structures
+        if (response.data['posts'] != null) {
+          final postsData = response.data['posts'];
+
+          // Check if posts is an object containing postsWithComments
+          if (postsData is Map<String, dynamic> &&
+              postsData['postsWithComments'] != null) {
+            final postsRaw = postsData['postsWithComments'] as List<dynamic>;
+            pagePosts = postsRaw
+                .map((e) => _transformPostData(e as Map<String, dynamic>))
+                .toList();
+          }
+          // Check if posts is a direct array
+          else if (postsData is List<dynamic>) {
+            pagePosts = postsData
+                .map((e) => _transformPostData(e as Map<String, dynamic>))
+                .toList();
+          }
+        } else if (response.data['postFeedsWithComments'] != null) {
+          // Handle case where allPosts returns same structure as feeds
+          final postsRaw =
+              response.data['postFeedsWithComments'] as List<dynamic>;
+          pagePosts = postsRaw
+              .map((e) => _transformPostData(e as Map<String, dynamic>))
+              .toList();
+        }
+
+        // Check pagination info to determine if there are more pages
+        if (response.data['paginationInfo'] != null) {
+          final paginationInfo =
+              response.data['paginationInfo'] as Map<String, dynamic>;
+          hasMorePages = paginationInfo['hasNextPage'] == true;
+          debugPrint(
+            'Pagination info: hasNextPage = ${paginationInfo['hasNextPage']}, currentPage = ${paginationInfo['currentPage']}, totalPages = ${paginationInfo['totalPages']}',
+          );
+        } else {
+          // If no pagination info, check if we got fewer posts than the limit
+          hasMorePages = pagePosts.length == limit;
+        }
+
+        allPosts.addAll(pagePosts);
+        currentPage++;
+
+        // Safety check to prevent infinite loops
+        if (currentPage > 100) {
+          debugPrint(
+            'Warning: Reached maximum page limit (100), stopping pagination',
+          );
+          break;
+        }
+
+        // If no posts were returned, stop pagination
+        if (pagePosts.isEmpty) {
+          hasMorePages = false;
+        }
+      }
+
+      debugPrint(
+        'Fetched total ${allPosts.length} posts from $currentPage pages',
+      );
+      return allPosts;
+    } catch (e) {
+      debugPrint('Error fetching all posts paginated: $e');
+      throw Exception('Failed to fetch all posts: $e');
+    }
+  }
+
   /// Like a post by post ID
   Future<bool> likePost(String postId) async {
     try {

@@ -4,13 +4,48 @@ import 'package:sangam/core/di/service_locator.dart';
 import 'package:sangam/features/socialfeed/presentation/pages/create_post_page.dart';
 import 'package:sangam/features/socialfeed/presentation/blocs/feeds_bloc.dart';
 
-class SocialFeedPageClean extends StatelessWidget {
+class SocialFeedPageClean extends StatefulWidget {
   const SocialFeedPageClean({super.key});
 
   @override
+  State<SocialFeedPageClean> createState() => _SocialFeedPageCleanState();
+}
+
+class _SocialFeedPageCleanState extends State<SocialFeedPageClean> {
+  final ScrollController _scrollController = ScrollController();
+  late FeedsBloc _feedsBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _feedsBloc = getIt<FeedsBloc>()..add(FeedsFetchRequested());
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _feedsBloc.close();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_isBottom) {
+      _feedsBloc.add(FeedsLoadMore());
+    }
+  }
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<FeedsBloc>()..add(FeedsFetchRequested()),
+    return BlocProvider<FeedsBloc>.value(
+      value: _feedsBloc,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Social Feed'),
@@ -37,29 +72,43 @@ class SocialFeedPageClean extends StatelessWidget {
                     Text('Error: ${state.message}'),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () =>
-                          context.read<FeedsBloc>().add(FeedsRefresh()),
+                      onPressed: () => _feedsBloc.add(FeedsRefresh()),
                       child: const Text('Retry'),
                     ),
                   ],
                 ),
               );
             }
-            if (state is FeedsSuccess) {
-              final posts = state.posts;
+            if (state is FeedsSuccess || state is FeedsLoadingMore) {
+              final posts = state is FeedsSuccess
+                  ? state.posts
+                  : (state as FeedsLoadingMore).currentPosts;
+
+              final hasReachedMax = state is FeedsSuccess
+                  ? state.hasReachedMax
+                  : false;
               if (posts.isEmpty) {
                 return const Center(child: Text('No posts yet'));
               }
 
               return RefreshIndicator(
                 onRefresh: () async {
-                  context.read<FeedsBloc>().add(FeedsRefresh());
+                  _feedsBloc.add(FeedsRefresh());
                 },
                 child: ListView.separated(
+                  controller: _scrollController,
                   padding: const EdgeInsets.all(12),
-                  itemCount: posts.length,
+                  itemCount: posts.length + (hasReachedMax ? 0 : 1),
                   separatorBuilder: (_, __) => const SizedBox(height: 12),
                   itemBuilder: (context, i) {
+                    if (i >= posts.length) {
+                      // Show loading indicator at the bottom
+                      return const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+
                     final post = posts[i];
                     return Card(
                       child: Padding(

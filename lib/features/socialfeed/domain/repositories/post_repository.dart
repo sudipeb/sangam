@@ -15,6 +15,9 @@ abstract class PostRepository {
   /// Fetch all posts
   Future<List<Post>> fetchAllPosts({int page = 1, int limit = 20});
 
+  /// Fetch ALL posts from all pages (complete dataset)
+  Future<List<Post>> fetchAllPostsPaginated();
+
   /// Edit an existing post
   Future<Post> editPost({
     required String postId,

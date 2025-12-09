@@ -34,6 +34,11 @@ class PostRepositoryImpl implements PostRepository {
   }
 
   @override
+  Future<List<Post>> fetchAllPostsPaginated() {
+    return _remoteDataSource.fetchAllPostsPaginated();
+  }
+
+  @override
   Future<Post> editPost({
     required String postId,
     String? title,

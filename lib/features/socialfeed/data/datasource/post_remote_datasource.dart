@@ -41,12 +41,12 @@ class PostRemoteDataSource {
         // Use regular JSON data when no image
         final data = {'title': title, 'description': description};
 
-        debugPrint('Creating post with data: $data');
+        // debugPrint('Creating post with data: $data');
 
         response = await apiClient.post(ApiEndpoints.createPost, data: data);
       }
 
-      debugPrint('Create post response: ${response.data}');
+      // debugPrint('Create post response: ${response.data}');
 
       if (response.data == null) {
         throw Exception('Empty response from server');
@@ -304,12 +304,8 @@ class PostRemoteDataSource {
       transformedData['updatedAt'] =
           transformedData['updatedAt'] ?? DateTime.now().toIso8601String();
 
-      debugPrint('Transformed post data: $transformedData');
-
       return PostModel.fromJson(transformedData);
     } catch (e) {
-      debugPrint('Error transforming post data: $e');
-      debugPrint('Original post data: $postData');
       rethrow;
     }
   }

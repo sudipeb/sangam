@@ -5,6 +5,7 @@ abstract class Post {
   final String description;
   final String? image;
   final String userId;
+  final String? name;
   final int likesCount;
   final int commentsCount;
   final DateTime createdAt;
@@ -16,6 +17,7 @@ abstract class Post {
     required this.description,
     this.image,
     required this.userId,
+    this.name,
     required this.likesCount,
     required this.commentsCount,
     required this.createdAt,

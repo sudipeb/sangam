@@ -15,6 +15,7 @@ abstract class PostModel with _$PostModel implements Post {
     required String description,
     String? image,
     required String userId,
+     String? name,
     required int likesCount,
     required int commentsCount,
     required DateTime createdAt,

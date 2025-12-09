@@ -22,7 +22,7 @@ class FeedsInitial extends FeedsState {}
 class FeedsLoading extends FeedsState {}
 
 class FeedsSuccess extends FeedsState {
-  final List<PostEntity> posts;
+  final List<Post> posts;
 
   FeedsSuccess(this.posts);
 }

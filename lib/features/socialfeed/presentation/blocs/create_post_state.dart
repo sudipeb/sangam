@@ -7,7 +7,7 @@ class CreatePostInitial extends CreatePostState {}
 class CreatePostLoading extends CreatePostState {}
 
 class CreatePostSuccess extends CreatePostState {
-  final PostEntity post;
+  final Post post;
 
   CreatePostSuccess(this.post);
 }

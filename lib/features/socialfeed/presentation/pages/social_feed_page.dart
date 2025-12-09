@@ -71,7 +71,9 @@ class SocialFeedPageClean extends StatelessWidget {
                               children: [
                                 CircleAvatar(
                                   child: Text(
-                                    'U', // Default to 'U' for User since userName is not available
+                                    post.userinfo?.name.isNotEmpty == true
+                                        ? post.userinfo!.name[0].toUpperCase()
+                                        : 'U',
                                   ),
                                 ),
                                 const SizedBox(width: 8),
@@ -81,7 +83,7 @@ class SocialFeedPageClean extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '${post.userinfo!.name}', // Default user name since userName is not available in Post entity
+                                        post.userinfo?.name ?? 'Unknown User',
                                         style: Theme.of(
                                           context,
                                         ).textTheme.titleSmall,

@@ -139,16 +139,41 @@ class PostRemoteDataSource {
         throw Exception('Empty response from server');
       }
 
-      // Handle response structure
+      // Handle different possible response structures
       if (response.data['posts'] != null) {
-        final postsRaw = response.data['posts'] as List<dynamic>;
+        final postsData = response.data['posts'];
+
+        // Check if posts is an object containing postsWithComments
+        if (postsData is Map<String, dynamic> &&
+            postsData['postsWithComments'] != null) {
+          final postsRaw = postsData['postsWithComments'] as List<dynamic>;
+          return postsRaw
+              .map((e) => _transformPostData(e as Map<String, dynamic>))
+              .toList();
+        }
+        // Check if posts is a direct array
+        else if (postsData is List<dynamic>) {
+          return postsData
+              .map((e) => _transformPostData(e as Map<String, dynamic>))
+              .toList();
+        }
+      } else if (response.data['postFeedsWithComments'] != null) {
+        // Handle case where allPosts returns same structure as feeds
+        final postsRaw =
+            response.data['postFeedsWithComments'] as List<dynamic>;
         return postsRaw
             .map((e) => _transformPostData(e as Map<String, dynamic>))
             .toList();
-      } else {
-        debugPrint('No posts found in all posts response');
-        return [];
+      } else if (response.data['post'] != null) {
+        // Single post: {message: "...", post: {...}}
+        final post = _transformPostData(
+          response.data['post'] as Map<String, dynamic>,
+        );
+        return [post];
       }
+
+      debugPrint('No posts found in all posts response');
+      return [];
     } catch (e) {
       debugPrint('Error fetching all posts: $e');
       throw Exception('Failed to fetch all posts: $e');
@@ -285,10 +310,41 @@ class PostRemoteDataSource {
         transformedData['id'] = transformedData['_id'];
       }
 
-      // Handle userId field - extract the _id if it's an object
-      if (transformedData['userId'] is Map<String, dynamic>) {
+      // Handle userInfo field first (priority over userId object)
+      if (transformedData['userInfo'] is Map<String, dynamic>) {
+        final userInfoObj = transformedData['userInfo'] as Map<String, dynamic>;
+        transformedData['userinfo'] = {
+          'id': userInfoObj['_id'] ?? '',
+          'name': userInfoObj['name'] ?? 'Unknown User',
+        };
+      }
+      // Handle userId field - extract the _id if it's an object and create userinfo
+      else if (transformedData['userId'] is Map<String, dynamic>) {
         final userIdObj = transformedData['userId'] as Map<String, dynamic>;
+        // Create userinfo object from the userId object
+        transformedData['userinfo'] = {
+          'id': userIdObj['_id'] ?? '',
+          'name': userIdObj['name'] ?? 'Unknown User',
+        };
+        // Set userId to just the _id for compatibility
         transformedData['userId'] = userIdObj['_id'] ?? '';
+      } else {
+        // If userId is just a string, create a minimal userinfo
+        // This handles cases like create post response where userId is not expanded
+        if (transformedData['userId'] != null &&
+            transformedData['userinfo'] == null) {
+          transformedData['userinfo'] = {
+            'id': transformedData['userId'],
+            'name': 'Unknown User',
+          };
+        }
+      }
+
+      // Ensure userId is a string (extract from userInfo if needed)
+      if (transformedData['userInfo'] is Map<String, dynamic> &&
+          transformedData['userId'] == null) {
+        final userInfoObj = transformedData['userInfo'] as Map<String, dynamic>;
+        transformedData['userId'] = userInfoObj['_id'] ?? '';
       }
 
       // Ensure required fields have safe default values
@@ -304,8 +360,12 @@ class PostRemoteDataSource {
       transformedData['updatedAt'] =
           transformedData['updatedAt'] ?? DateTime.now().toIso8601String();
 
+      debugPrint('Transformed post data: $transformedData');
+
       return PostModel.fromJson(transformedData);
     } catch (e) {
+      debugPrint('Error transforming post data: $e');
+      debugPrint('Original post data: $postData');
       rethrow;
     }
   }

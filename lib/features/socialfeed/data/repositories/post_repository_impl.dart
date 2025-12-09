@@ -14,12 +14,13 @@ class PostRepositoryImpl implements PostRepository {
     required String title,
     required String description,
     String? image,
-  }) {
-    return _remoteDataSource.createPost(
+  }) async {
+    final response = await _remoteDataSource.createPost(
       title: title,
       description: description,
       image: image,
     );
+    return response.post; // Extract the post from the response
   }
 
   @override

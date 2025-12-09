@@ -7,7 +7,7 @@ class FetchFeedsUseCase {
 
   FetchFeedsUseCase(this._repository);
 
-  Future<List<PostEntity>> call({int page = 1, int limit = 20}) {
+  Future<List<Post>> call({int page = 1, int limit = 20}) {
     return _repository.fetchFeeds(page: page, limit: limit);
   }
 }

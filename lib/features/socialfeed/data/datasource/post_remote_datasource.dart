@@ -8,8 +8,8 @@ class PostRemoteDataSource {
   /// Instance of [ApiClient] to make network requests
   final ApiClient apiClient = ApiClient();
 
-  /// Create a new post. Returns CreatePostResponse on success.
-  Future<CreatePostResponse> createPost({
+  /// Create a new post. Returns CreatePostResponseModel on success.
+  Future<CreatePostResponseModel> createPost({
     required String title,
     required String description,
     String? image,
@@ -34,7 +34,7 @@ class PostRemoteDataSource {
         throw Exception('Empty response from server');
       }
 
-      return CreatePostResponse.fromJson(response.data);
+      return CreatePostResponseModel.fromJson(response.data);
     } catch (e) {
       debugPrint('Error creating post: $e');
       throw Exception('Failed to create post: $e');

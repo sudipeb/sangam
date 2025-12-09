@@ -10,7 +10,7 @@ part 'post_model.g.dart';
 @freezed
 abstract class PostModel with _$PostModel implements Post {
   const factory PostModel({
-    @JsonKey(name: "_id") required String id,
+    required String id,
     required String title,
     required String description,
     String? image,

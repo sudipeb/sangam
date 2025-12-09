@@ -7,7 +7,7 @@ class CreatePostUseCase {
 
   CreatePostUseCase(this._repository);
 
-  Future<PostEntity> call({
+  Future<Post> call({
     required String title,
     required String description,
     String? image,

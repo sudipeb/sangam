@@ -81,7 +81,7 @@ class SocialFeedPageClean extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '${post.name}', // Default user name since userName is not available in Post entity
+                                        '${post.userinfo!.name}', // Default user name since userName is not available in Post entity
                                         style: Theme.of(
                                           context,
                                         ).textTheme.titleSmall,

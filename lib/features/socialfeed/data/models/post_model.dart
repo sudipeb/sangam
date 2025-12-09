@@ -1,3 +1,4 @@
+import 'package:sangam/features/socialfeed/data/models/user_info_model.dart';
 import 'package:sangam/features/socialfeed/domain/entities/post_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -15,11 +16,11 @@ abstract class PostModel with _$PostModel implements Post {
     required String description,
     String? image,
     required String userId,
-     String? name,
     required int likesCount,
     required int commentsCount,
     required DateTime createdAt,
     required DateTime updatedAt,
+    UserInfoModel? userinfo,
   }) = _PostModel;
 
   /// Factory constructor to parse a JSON map into a [PostModel] object.

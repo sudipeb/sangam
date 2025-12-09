@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sangam/core/di/service_locator.dart';
 import 'package:sangam/features/socialfeed/presentation/blocs/create_post_bloc.dart';
 import 'package:sangam/features/socialfeed/presentation/blocs/create_post_event.dart';
@@ -16,12 +19,29 @@ class _CreatePostPageCleanState extends State<CreatePostPageClean> {
   final _formKey = GlobalKey<FormState>();
   final _title = TextEditingController();
   final _description = TextEditingController();
+  final _imageController = TextEditingController();
+  // Notifier to hold picked image
+  final ValueNotifier<File?> _imageNotifier = ValueNotifier<File?>(null);
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void dispose() {
     _title.dispose();
     _description.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(source: source);
+      if (pickedFile != null) {
+        final path = pickedFile.path;
+        _imageNotifier.value = File(path);
+        _imageController.text = path;
+      }
+    } catch (e) {
+      debugPrint("Error picking image: $e");
+    }
   }
 
   void _submit(BuildContext context) {
@@ -83,6 +103,20 @@ class _CreatePostPageCleanState extends State<CreatePostPageClean> {
                         : null,
                   ),
                   const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: () => _pickImage(ImageSource.gallery),
+                    icon: const Icon(Icons.photo, color: Colors.deepOrange),
+                    label: const Text(
+                      'Pick Image',
+                      style: TextStyle(color: Colors.deepOrange),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      backgroundColor: const Color.fromARGB(255, 109, 47, 224),
+                    ),
+                  ),
                   BlocBuilder<CreatePostBloc, CreatePostState>(
                     builder: (context, state) {
                       if (state is CreatePostLoading) {

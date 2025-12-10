@@ -125,6 +125,7 @@ class _SocialFeedPageCleanState extends State<SocialFeedPageClean> {
                                         : 'U',
                                   ),
                                 ),
+
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Column(
@@ -145,6 +146,16 @@ class _SocialFeedPageCleanState extends State<SocialFeedPageClean> {
                                       ),
                                     ],
                                   ),
+                                ),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () =>
+                                          Text("Followed the user"),
+                                      icon: Icon(Icons.group_add),
+                                      tooltip: 'Follow',
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

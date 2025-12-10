@@ -178,13 +178,24 @@ class _SocialFeedPageCleanState extends State<SocialFeedPageClean> {
                             const SizedBox(height: 8),
                             Row(
                               children: [
-                                Icon(Icons.favorite_border, size: 20),
-                                const SizedBox(width: 4),
-                                Text('${post.likesCount}'),
-                                const SizedBox(width: 16),
-                                Icon(Icons.comment_outlined, size: 20),
-                                const SizedBox(width: 4),
-                                Text('${post.commentsCount}'),
+                                IconButton(
+                                  onPressed: () => SnackBar(
+                                    content: Text(
+                                      "Post Liked Successfully",
+                                      style: TextStyle(color: Colors.green),
+                                    ),
+                                  ),
+                                  icon: Icon(Icons.thumb_up),
+                                ),
+                                IconButton(
+                                  onPressed: () => SnackBar(
+                                    content: Text(
+                                      "Comment enabled",
+                                      style: TextStyle(color: Colors.green),
+                                    ),
+                                  ),
+                                  icon: Icon(Icons.comment),
+                                ),
                               ],
                             ),
                           ],

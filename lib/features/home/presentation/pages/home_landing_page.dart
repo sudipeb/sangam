@@ -34,29 +34,29 @@ class HomeLandingPage extends StatelessWidget {
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 32),
-            Card(
-              margin: const EdgeInsets.all(16),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading: const Icon(Icons.feed, color: Colors.blue),
-                      title: const Text('Social Feed'),
-                      subtitle: const Text(
-                        'View and browse all posts with infinite scroll',
-                      ),
-                      trailing: const Icon(Icons.arrow_forward_ios),
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const SocialFeedPageClean(),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            // Card(
+            //   margin: const EdgeInsets.all(16),
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(16),
+            //     child: Column(
+            //       children: [
+            //         ListTile(
+            //           leading: const Icon(Icons.feed, color: Colors.blue),
+            //           title: const Text('Social Feed'),
+            //           subtitle: const Text(
+            //             'View and browse all posts with infinite scroll',
+            //           ),
+            //           trailing: const Icon(Icons.arrow_forward_ios),
+            //           onTap: () => Navigator.of(context).push(
+            //             MaterialPageRoute(
+            //               builder: (_) => const SocialFeedPageClean(),
+            //             ),
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

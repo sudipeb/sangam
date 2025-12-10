@@ -54,6 +54,21 @@ class PostRepositoryImpl implements PostRepository {
   }
 
   @override
+  Future<bool> likePost(String postId) {
+    return _remoteDataSource.likePost(postId);
+  }
+
+  @override
+  Future<bool> unlikePost(String postId) {
+    return _remoteDataSource.unlikePost(postId);
+  }
+
+  @override
+  Future<bool> commentOnPost(String postId, String comment) {
+    return _remoteDataSource.commentOnPost(postId, comment);
+  }
+
+  @override
   Future<bool> deletePost(String postId) {
     return _remoteDataSource.deletePost(postId);
   }

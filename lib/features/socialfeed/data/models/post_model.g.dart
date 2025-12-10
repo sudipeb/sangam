@@ -14,6 +14,7 @@ _PostModel _$PostModelFromJson(Map<String, dynamic> json) => _PostModel(
   userId: json['userId'] as String,
   likesCount: (json['likesCount'] as num).toInt(),
   commentsCount: (json['commentsCount'] as num).toInt(),
+  isLiked: json['isLiked'] as bool? ?? false,
   createdAt: DateTime.parse(json['createdAt'] as String),
   updatedAt: DateTime.parse(json['updatedAt'] as String),
   userinfo: json['userinfo'] == null
@@ -30,6 +31,7 @@ Map<String, dynamic> _$PostModelToJson(_PostModel instance) =>
       'userId': instance.userId,
       'likesCount': instance.likesCount,
       'commentsCount': instance.commentsCount,
+      'isLiked': instance.isLiked,
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt.toIso8601String(),
       'userinfo': instance.userinfo,

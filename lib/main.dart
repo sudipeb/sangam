@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:hive_ce_flutter/hive_flutter.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sangam/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sangam/router/app_router.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
@@ -15,7 +17,7 @@ void main() async {
   // Initialize dependency injection container
   setupDependencies();
 
-  runApp(MyApp());
+  runApp(Portal(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

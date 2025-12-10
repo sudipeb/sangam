@@ -54,6 +54,19 @@ class ApiClient {
     }
   }
 
+  /// POST request with options using [Dio.post] method
+  Future<Response> postWithOptions(
+    String path, {
+    dynamic data,
+    Options? options,
+  }) async {
+    try {
+      return await dio.post(path, data: data, options: options);
+    } on DioException catch (e) {
+      throw NetworkExceptions.fromDioError(e);
+    }
+  }
+
   /// POST request with multipart form data using [Dio.post] method
   Future<Response> postMultipart(String path, {required FormData data}) async {
     try {
@@ -67,6 +80,28 @@ class ApiClient {
   Future<Response> put(String path, {dynamic data}) async {
     try {
       return await dio.put(path, data: data);
+    } on DioException catch (e) {
+      throw NetworkExceptions.fromDioError(e);
+    }
+  }
+
+  /// PATCH request using [Dio.patch] method
+  Future<Response> patch(String path, {dynamic data}) async {
+    try {
+      return await dio.patch(path, data: data);
+    } on DioException catch (e) {
+      throw NetworkExceptions.fromDioError(e);
+    }
+  }
+
+  /// PATCH request with options using [Dio.patch] method
+  Future<Response> patchWithOptions(
+    String path, {
+    dynamic data,
+    Options? options,
+  }) async {
+    try {
+      return await dio.patch(path, data: data, options: options);
     } on DioException catch (e) {
       throw NetworkExceptions.fromDioError(e);
     }

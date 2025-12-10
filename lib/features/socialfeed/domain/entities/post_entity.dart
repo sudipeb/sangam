@@ -7,6 +7,7 @@ abstract class Post {
   final String userId;
   final int likesCount;
   final int commentsCount;
+  final bool isLiked;
   final DateTime createdAt;
   final DateTime updatedAt;
   final UserInfo? userinfo;
@@ -19,6 +20,7 @@ abstract class Post {
     required this.userId,
     required this.likesCount,
     required this.commentsCount,
+    this.isLiked = false,
     required this.createdAt,
     required this.updatedAt,
     this.userinfo,

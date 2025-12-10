@@ -16,12 +16,20 @@ class AuthInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     try {
+      debugPrint('AuthInterceptor: Processing request to ${options.path}');
       final token = await _storage.read(key: 'accesstoken');
+      debugPrint(
+        'AuthInterceptor: Token found: ${token != null && token.isNotEmpty}',
+      );
+
       if (token != null && token.isNotEmpty) {
         options.headers['Authorization'] = 'Bearer $token';
+        debugPrint('AuthInterceptor: Added Authorization header');
+      } else {
+        debugPrint('AuthInterceptor: No token found, skipping auth header');
       }
     } catch (e) {
-      debugPrint('Error reading token: $e');
+      debugPrint('AuthInterceptor: Error reading token: $e');
     }
 
     handler.next(options); // continue

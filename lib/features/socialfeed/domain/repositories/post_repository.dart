@@ -26,6 +26,15 @@ abstract class PostRepository {
     String? image,
   });
 
+  /// Like a post
+  Future<bool> likePost(String postId);
+
+  /// Unlike a post
+  Future<bool> unlikePost(String postId);
+
+  /// Add a comment to a post
+  Future<bool> commentOnPost(String postId, String comment);
+
   /// Delete a post
   Future<bool> deletePost(String postId);
 }

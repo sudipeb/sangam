@@ -18,6 +18,7 @@ abstract class PostModel with _$PostModel implements Post {
     required String userId,
     required int likesCount,
     required int commentsCount,
+    @Default(false) bool isLiked,
     required DateTime createdAt,
     required DateTime updatedAt,
     UserInfoModel? userinfo,

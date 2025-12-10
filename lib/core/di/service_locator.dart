@@ -16,8 +16,12 @@ import 'package:sangam/features/socialfeed/data/repositories/post_repository_imp
 import 'package:sangam/features/socialfeed/domain/repositories/post_repository.dart';
 import 'package:sangam/features/socialfeed/domain/usecases/create_post_usecase.dart';
 import 'package:sangam/features/socialfeed/domain/usecases/fetch_feeds_usecase.dart';
+import 'package:sangam/features/socialfeed/domain/usecases/like_post.dart';
+import 'package:sangam/features/socialfeed/domain/usecases/unlike_post.dart';
+import 'package:sangam/features/socialfeed/domain/usecases/comment_on_post.dart';
 import 'package:sangam/features/socialfeed/presentation/blocs/create_post_bloc.dart';
 import 'package:sangam/features/socialfeed/presentation/blocs/feeds_bloc.dart';
+import 'package:sangam/features/socialfeed/presentation/blocs/post_actions_bloc.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -48,6 +52,18 @@ void setupDependencies() {
 
   getIt.registerLazySingleton<FetchFeedsUseCase>(
     () => FetchFeedsUseCase(getIt<PostRepository>()),
+  );
+
+  getIt.registerLazySingleton<LikePostUseCase>(
+    () => LikePostUseCase(getIt<PostRepository>()),
+  );
+
+  getIt.registerLazySingleton<UnlikePostUseCase>(
+    () => UnlikePostUseCase(getIt<PostRepository>()),
+  );
+
+  getIt.registerLazySingleton<CommentOnPostUseCase>(
+    () => CommentOnPostUseCase(getIt<PostRepository>()),
   );
 
   // Repositories
@@ -91,4 +107,12 @@ void setupDependencies() {
   );
 
   getIt.registerFactory<FeedsBloc>(() => FeedsBloc(getIt<FetchFeedsUseCase>()));
+
+  getIt.registerFactory<PostActionsBloc>(
+    () => PostActionsBloc(
+      likePostUseCase: getIt<LikePostUseCase>(),
+      unlikePostUseCase: getIt<UnlikePostUseCase>(),
+      commentOnPostUseCase: getIt<CommentOnPostUseCase>(),
+    ),
+  );
 }

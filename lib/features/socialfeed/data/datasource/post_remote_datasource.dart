@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sangam/core/constants/api_constants.dart';
 import 'package:sangam/core/network/api_client.dart';
 import 'package:sangam/features/socialfeed/data/models/post_model.dart';
@@ -276,15 +277,44 @@ class PostRemoteDataSource {
     try {
       debugPrint('Liking post: $postId');
 
-      final endpoint = ApiEndpoints.likePost.replaceAll('post_id', postId);
-      final response = await apiClient.post(endpoint);
+      // Check if user is authenticated
+      final storage = FlutterSecureStorage();
+      final token = await storage.read(key: 'accesstoken');
+      debugPrint('Auth token exists: ${token != null && token.isNotEmpty}');
+      debugPrint(
+        'Token preview: ${token != null && token.isNotEmpty ? token.substring(0, token.length > 20 ? 20 : token.length) : 'null'}...',
+      );
+
+      if (token == null || token.isEmpty) {
+        throw Exception('User not authenticated');
+      }
+
+      // Create the correct endpoint format
+      final endpoint = 'api/v1/post/like/$postId';
+      debugPrint('Like endpoint: $endpoint');
+
+      // Make the API call with explicit Authorization header using PATCH method
+      final response = await apiClient.patchWithOptions(
+        endpoint,
+        data: {},
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
 
       debugPrint('Like post response: ${response.data}');
+      debugPrint('Like post status code: ${response.statusCode}');
 
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {
       debugPrint('Error liking post: $e');
-      throw Exception('Failed to like post: $e');
+      if (e is DioException) {
+        debugPrint('Response data: ${e.response?.data}');
+        debugPrint('Status code: ${e.response?.statusCode}');
+        debugPrint('Headers: ${e.response?.headers}');
+        debugPrint('Request method: ${e.requestOptions.method}');
+        debugPrint('Request headers: ${e.requestOptions.headers}');
+        debugPrint('Request data: ${e.requestOptions.data}');
+      }
+      return false;
     }
   }
 
@@ -293,15 +323,35 @@ class PostRemoteDataSource {
     try {
       debugPrint('Unliking post: $postId');
 
-      final endpoint = ApiEndpoints.unlikePost.replaceAll('post_id', postId);
-      final response = await apiClient.post(endpoint);
+      // Check if user is authenticated
+      final storage = FlutterSecureStorage();
+      final token = await storage.read(key: 'accesstoken');
+      debugPrint('Auth token exists: ${token != null && token.isNotEmpty}');
 
+      if (token == null || token.isEmpty) {
+        throw Exception('User not authenticated');
+      }
+
+      final endpoint = 'api/v1/post/unlike/$postId';
+      debugPrint('Unlike endpoint: $endpoint');
+
+      // Make the API call with explicit Authorization header using PATCH method
+      final response = await apiClient.patchWithOptions(
+        endpoint,
+        data: {},
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
       debugPrint('Unlike post response: ${response.data}');
+      debugPrint('Unlike post status code: ${response.statusCode}');
 
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {
       debugPrint('Error unliking post: $e');
-      throw Exception('Failed to unlike post: $e');
+      if (e is DioException) {
+        debugPrint('Unlike response data: ${e.response?.data}');
+        debugPrint('Unlike status code: ${e.response?.statusCode}');
+      }
+      return false;
     }
   }
 
@@ -310,17 +360,37 @@ class PostRemoteDataSource {
     try {
       debugPrint('Commenting on post: $postId with comment: $comment');
 
-      final endpoint = ApiEndpoints.commentPost.replaceAll('post_id', postId);
+      // Check if user is authenticated
+      final storage = FlutterSecureStorage();
+      final token = await storage.read(key: 'accesstoken');
+      debugPrint('Auth token exists: ${token != null && token.isNotEmpty}');
+
+      if (token == null || token.isEmpty) {
+        throw Exception('User not authenticated');
+      }
+
+      final endpoint = 'api/v1/post/comment/$postId';
+      debugPrint('Comment endpoint: $endpoint');
+
       final data = {'comment': comment};
 
-      final response = await apiClient.post(endpoint, data: data);
+      final response = await apiClient.postWithOptions(
+        endpoint,
+        data: data,
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
 
       debugPrint('Comment post response: ${response.data}');
+      debugPrint('Comment post status code: ${response.statusCode}');
 
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {
       debugPrint('Error commenting on post: $e');
-      throw Exception('Failed to comment on post: $e');
+      if (e is DioException) {
+        debugPrint('Comment response data: ${e.response?.data}');
+        debugPrint('Comment status code: ${e.response?.statusCode}');
+      }
+      return false;
     }
   }
 
@@ -446,6 +516,8 @@ class PostRemoteDataSource {
       transformedData['image'] = transformedData['image']; // Can be null
       transformedData['likesCount'] = transformedData['likesCount'] ?? 0;
       transformedData['commentsCount'] = transformedData['commentsCount'] ?? 0;
+      transformedData['isLiked'] =
+          transformedData['isLiked'] ?? false; // Default to false
       transformedData['createdAt'] =
           transformedData['createdAt'] ?? DateTime.now().toIso8601String();
       transformedData['updatedAt'] =

@@ -22,6 +22,10 @@ class ApiEndpoints {
   static const String unlikePost = "api/v1/post/unlike/post_id";
   static const String commentPost = "api/v1/post/comment/post_id";
   static const String deletePost = "api/v1/post/delete/post_id";
+
+  ///follow user
+  static const String followUser = "api/v1/follow/user_id";
+  static const String unfollowUser = "api/v1/follow/user_id";
 }
 
 ///Username:sudipkoirala@gmail.com
